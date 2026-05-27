@@ -467,6 +467,53 @@
   .flex { display: flex; }
   .hidden { display: none; }
 
+  /* Help tooltips */
+  .helptip {
+    position: relative;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .helptip-icon {
+    width: 15px; height: 15px; border-radius: 50%;
+    background: var(--border); color: var(--brown-soft);
+    border: none; padding: 0;
+    font-size: 10px; font-weight: 700; line-height: 1;
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: help; font-family: inherit;
+    transition: all 0.15s ease;
+  }
+  .helptip-icon:hover { background: var(--terracotta); color: white; }
+  .helptip-popup {
+    position: absolute; top: calc(100% + 6px); left: 0;
+    background: var(--brown); color: var(--cream);
+    padding: 10px 12px; border-radius: 8px;
+    font-size: 12px; font-weight: 400;
+    line-height: 1.5; letter-spacing: 0;
+    text-transform: none;
+    width: max-content; max-width: 260px;
+    z-index: 60;
+    box-shadow: var(--shadow-md);
+    opacity: 0; pointer-events: none;
+    transform: translateY(-2px);
+    transition: opacity 0.14s ease, transform 0.14s ease;
+  }
+  .helptip-popup::before {
+    content: ''; position: absolute; top: -4px; left: 12px;
+    width: 8px; height: 8px; background: var(--brown);
+    transform: rotate(45deg);
+  }
+  .helptip:hover .helptip-popup,
+  .helptip-popup.open {
+    opacity: 1; pointer-events: auto; transform: translateY(0);
+  }
+
+  /* Extra ingredient row */
+  .extra-row {
+    display: grid; grid-template-columns: 1fr 90px 32px;
+    gap: 8px; align-items: center;
+    margin-bottom: 8px;
+  }
+  .extra-row .input { padding: 9px 12px; font-size: 14px; }
+
   /* Flour chips */
   .chip-row {
     display: flex; flex-wrap: wrap; gap: 6px;
@@ -559,6 +606,28 @@ const FLOUR_PRESETS = [
   '50/50 wheat & rye',
 ];
 
+const EXTRA_SUGGESTIONS = [
+  'Instant yeast', 'Fresh yeast', 'Active dry yeast',
+  'Sugar', 'Honey', 'Maple syrup', 'Brown sugar',
+  'Butter', 'Olive oil', 'Vegetable oil',
+  'Milk', 'Eggs',
+  'Sesame seeds', 'Sunflower seeds', 'Pumpkin seeds', 'Flax seeds', 'Poppy seeds',
+  'Walnuts', 'Pecans', 'Hazelnuts',
+  'Raisins', 'Dried cranberries', 'Dates',
+  'Cocoa powder', 'Cinnamon',
+  'Cheese', 'Olives', 'Rosemary',
+];
+
+const GLOSSARY = {
+  bulk: 'Bulk ferment: the first major rise after mixing. The dough sits at room temperature for several hours while wild yeast multiplies, building flavour and structure.',
+  retard: 'Cold retard: an optional slow rise in the fridge (usually overnight). Slows fermentation, deepens flavour, and makes the dough easier to score and shape.',
+  folds: 'Stretch & folds: gentle dough manipulations during bulk fermentation that build gluten strength without aggressive kneading. Typically 3–6 over the bulk period.',
+  foldInterval: 'Fold interval: minutes between each stretch & fold. Most recipes space folds 30–60 min apart, with longer gaps later in the bulk.',
+  hydration: 'Hydration: water weight as a percentage of total flour. Higher = wetter, more open crumb but harder to handle. 65–75% is typical for country loaves.',
+  starter: 'Starter (also called levain): the active, bubbly sourdough culture you mix into the dough. More starter = faster fermentation and a more tangy loaf.',
+  salt: 'Salt as a percentage of flour. Almost always 1.8–2.2%. Salt slows fermentation, strengthens gluten, and brings out flavour.',
+};
+
 // ============================================================
 //  Default state
 // ============================================================
@@ -577,7 +646,8 @@ const defaultState = {
       flourTotal: 500,
       water: 360,
       salt: 10,
-      levain: 100,
+      starter: 100,
+      extras: [],
       notes: 'Classic 72% hydration country loaf. Bake at 250°C with steam for 20 min, then 220°C for 25 min.',
       bulkHours: 4.5,
       foldCount: 4,
@@ -794,6 +864,30 @@ const Icon = ({ name, size = 18 }) => {
 // ============================================================
 //  Components
 // ============================================================
+function HelpTip({ label, text }) {
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    if (!open) return;
+    const close = (e) => {
+      if (e.target.closest && e.target.closest('.helptip')) return;
+      setOpen(false);
+    };
+    const t = setTimeout(() => document.addEventListener('click', close), 0);
+    return () => { clearTimeout(t); document.removeEventListener('click', close); };
+  }, [open]);
+  return h('span', { className: 'helptip' },
+    label,
+    h('button', {
+      type: 'button',
+      className: 'helptip-icon',
+      onClick: (e) => { e.stopPropagation(); setOpen(o => !o); },
+      'aria-label': 'What does this mean?',
+      tabIndex: 0,
+    }, '?'),
+    h('span', { className: 'helptip-popup' + (open ? ' open' : '') }, text),
+  );
+}
+
 function Header({ tab, setTab }) {
   return h('header', { className: 'app-header' },
     h('div', { className: 'app-header-inner' },
@@ -1215,15 +1309,18 @@ function RecipesTab({ state, dispatch, toast, setTab }) {
           state.recipes.map(r => {
             const hydration = Math.round((r.water / r.flourTotal) * 100);
             const salt = ((r.salt / r.flourTotal) * 100).toFixed(1);
-            const levain = Math.round((r.levain / r.flourTotal) * 100);
-            const totalWeight = r.flourTotal + r.water + r.salt + r.levain;
+            const starterPct = Math.round((r.starter / r.flourTotal) * 100);
+            const extrasW = (r.extras || []).reduce((s, x) => s + (Number(x.grams) || 0), 0);
+            const totalWeight = r.flourTotal + r.water + r.salt + r.starter + extrasW;
+            const extrasCount = (r.extras || []).length;
             return h('div', { key: r.id, className: 'recipe-card', onClick: () => setEditing(r) },
               h('div', { style: { flex: 1 } },
                 h('div', { className: 'recipe-card-title' }, r.name),
                 h('div', { className: 'recipe-card-meta' },
                   h('span', null, `${hydration}% hydration`),
-                  h('span', null, `${levain}% levain`),
+                  h('span', null, `${starterPct}% starter`),
                   h('span', null, `${salt}% salt`),
+                  extrasCount > 0 && h('span', null, `+${extrasCount} add-in${extrasCount === 1 ? '' : 's'}`),
                   h('span', null, `${totalWeight}g total`),
                 ),
               ),
@@ -1262,7 +1359,8 @@ function RecipeModal({ recipe, onClose, onSave, onDelete }) {
   const [r, setR] = useState(recipe || {
     id: uid(),
     name: '',
-    flourTotal: 500, water: 360, salt: 10, levain: 100,
+    flourTotal: 500, water: 360, salt: 10, starter: 100,
+    extras: [],
     notes: '',
     bulkHours: 4.5, foldCount: 4, foldIntervalMin: 45,
     retardHours: 12, bakeMin: 45,
@@ -1270,19 +1368,34 @@ function RecipeModal({ recipe, onClose, onSave, onDelete }) {
 
   const hydration = r.flourTotal ? ((r.water / r.flourTotal) * 100).toFixed(0) : 0;
   const saltPct = r.flourTotal ? ((r.salt / r.flourTotal) * 100).toFixed(1) : 0;
-  const levainPct = r.flourTotal ? ((r.levain / r.flourTotal) * 100).toFixed(0) : 0;
-  const total = (r.flourTotal || 0) + (r.water || 0) + (r.salt || 0) + (r.levain || 0);
+  const starterPct = r.flourTotal ? ((r.starter / r.flourTotal) * 100).toFixed(0) : 0;
+  const extras = r.extras || [];
+  const extrasTotal = extras.reduce((sum, x) => sum + (Number(x.grams) || 0), 0);
+  const total = (r.flourTotal || 0) + (r.water || 0) + (r.salt || 0) + (r.starter || 0) + extrasTotal;
 
   const set = (k, v) => setR({ ...r, [k]: v });
+
+  const addExtra = () => setR({ ...r, extras: [...extras, { id: uid(), name: '', grams: 0 }] });
+  const updateExtra = (id, patch) => setR({
+    ...r,
+    extras: extras.map(x => x.id === id ? { ...x, ...patch } : x),
+  });
+  const removeExtra = (id) => setR({ ...r, extras: extras.filter(x => x.id !== id) });
 
   const submit = (e) => {
     e.preventDefault();
     if (!r.name.trim()) return;
-    onSave({ ...r, name: r.name.trim() });
+    const cleanedExtras = extras
+      .filter(x => x.name.trim() && Number(x.grams) > 0)
+      .map(x => ({ ...x, name: x.name.trim(), grams: Number(x.grams) }));
+    onSave({ ...r, name: r.name.trim(), extras: cleanedExtras });
   };
 
   return h(Modal, { title: recipe ? 'Edit recipe' : 'New recipe', onClose },
     h('form', { onSubmit: submit },
+      h('datalist', { id: 'extra-ingredients' },
+        EXTRA_SUGGESTIONS.map(s => h('option', { key: s, value: s })),
+      ),
       h('div', { className: 'modal-body' },
         h('div', { className: 'field' },
           h('label', { className: 'field-label' }, 'Name'),
@@ -1297,7 +1410,9 @@ function RecipeModal({ recipe, onClose, onSave, onDelete }) {
             ),
           ),
           h('div', { className: 'field' },
-            h('label', { className: 'field-label' }, `Water (${hydration}%)`),
+            h('label', { className: 'field-label' },
+              h(HelpTip, { label: `Water (${hydration}%)`, text: GLOSSARY.hydration })
+            ),
             h('div', { className: 'input-suffix-wrap' },
               h('input', { type: 'number', min: '0', className: 'input', value: r.water, onChange: e => set('water', Number(e.target.value)) }),
               h('span', { className: 'input-suffix' }, 'g'),
@@ -1306,34 +1421,70 @@ function RecipeModal({ recipe, onClose, onSave, onDelete }) {
         ),
         h('div', { className: 'field-row' },
           h('div', { className: 'field' },
-            h('label', { className: 'field-label' }, `Salt (${saltPct}%)`),
+            h('label', { className: 'field-label' },
+              h(HelpTip, { label: `Salt (${saltPct}%)`, text: GLOSSARY.salt })
+            ),
             h('div', { className: 'input-suffix-wrap' },
               h('input', { type: 'number', min: '0', step: '0.5', className: 'input', value: r.salt, onChange: e => set('salt', Number(e.target.value)) }),
               h('span', { className: 'input-suffix' }, 'g'),
             ),
           ),
           h('div', { className: 'field' },
-            h('label', { className: 'field-label' }, `Levain (${levainPct}%)`),
+            h('label', { className: 'field-label' },
+              h(HelpTip, { label: `Starter (${starterPct}%)`, text: GLOSSARY.starter })
+            ),
             h('div', { className: 'input-suffix-wrap' },
-              h('input', { type: 'number', min: '0', className: 'input', value: r.levain, onChange: e => set('levain', Number(e.target.value)) }),
+              h('input', { type: 'number', min: '0', className: 'input', value: r.starter, onChange: e => set('starter', Number(e.target.value)) }),
               h('span', { className: 'input-suffix' }, 'g'),
             ),
           ),
         ),
-        h('div', { className: 'text-xs text-muted', style: { marginTop: -4, marginBottom: 16 } },
+
+        // Add-ins
+        h('h3', { style: { fontSize: 14, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--brown-soft)', fontFamily: 'Inter', fontWeight: 600, marginTop: 12, marginBottom: 10 } }, 'Add-ins (optional)'),
+        extras.length === 0
+          ? h('div', { className: 'text-xs text-muted', style: { marginBottom: 8 } }, 'Fresh yeast, seeds, oil, dried fruit, herbs…')
+          : extras.map(x =>
+              h('div', { key: x.id, className: 'extra-row' },
+                h('input', {
+                  type: 'text',
+                  list: 'extra-ingredients',
+                  className: 'input',
+                  placeholder: 'Ingredient',
+                  value: x.name,
+                  onChange: e => updateExtra(x.id, { name: e.target.value }),
+                }),
+                h('div', { className: 'input-suffix-wrap' },
+                  h('input', { type: 'number', min: '0', step: '0.5', className: 'input', value: x.grams, onChange: e => updateExtra(x.id, { grams: e.target.value }) }),
+                  h('span', { className: 'input-suffix' }, 'g'),
+                ),
+                h('button', { type: 'button', className: 'icon-btn', onClick: () => removeExtra(x.id), title: 'Remove', 'aria-label': 'Remove' },
+                  h(Icon, { name: 'close', size: 14 })
+                ),
+              )
+            ),
+        h('button', { type: 'button', className: 'btn btn-sm', style: { marginTop: 4 }, onClick: addExtra },
+          h(Icon, { name: 'plus', size: 14 }), 'Add ingredient',
+        ),
+
+        h('div', { className: 'text-xs text-muted', style: { marginTop: 12, marginBottom: 16 } },
           `Total dough weight: ${total}g`),
 
         h('h3', { style: { fontSize: 14, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--brown-soft)', fontFamily: 'Inter', fontWeight: 600, marginTop: 8, marginBottom: 10 } }, 'Timing'),
         h('div', { className: 'field-row' },
           h('div', { className: 'field' },
-            h('label', { className: 'field-label' }, 'Bulk ferment'),
+            h('label', { className: 'field-label' },
+              h(HelpTip, { label: 'Bulk ferment', text: GLOSSARY.bulk })
+            ),
             h('div', { className: 'input-suffix-wrap' },
               h('input', { type: 'number', step: '0.25', min: '0', className: 'input', value: r.bulkHours, onChange: e => set('bulkHours', Number(e.target.value)) }),
               h('span', { className: 'input-suffix' }, 'h'),
             ),
           ),
           h('div', { className: 'field' },
-            h('label', { className: 'field-label' }, 'Cold retard'),
+            h('label', { className: 'field-label' },
+              h(HelpTip, { label: 'Cold retard', text: GLOSSARY.retard })
+            ),
             h('div', { className: 'input-suffix-wrap' },
               h('input', { type: 'number', step: '0.5', min: '0', className: 'input', value: r.retardHours, onChange: e => set('retardHours', Number(e.target.value)) }),
               h('span', { className: 'input-suffix' }, 'h'),
@@ -1342,11 +1493,15 @@ function RecipeModal({ recipe, onClose, onSave, onDelete }) {
         ),
         h('div', { className: 'field-row-3' },
           h('div', { className: 'field' },
-            h('label', { className: 'field-label' }, 'Folds'),
+            h('label', { className: 'field-label' },
+              h(HelpTip, { label: 'Folds', text: GLOSSARY.folds })
+            ),
             h('input', { type: 'number', min: '0', max: '10', className: 'input', value: r.foldCount, onChange: e => set('foldCount', Number(e.target.value)) }),
           ),
           h('div', { className: 'field' },
-            h('label', { className: 'field-label' }, 'Fold interval'),
+            h('label', { className: 'field-label' },
+              h(HelpTip, { label: 'Fold interval', text: GLOSSARY.foldInterval })
+            ),
             h('div', { className: 'input-suffix-wrap' },
               h('input', { type: 'number', min: '0', className: 'input', value: r.foldIntervalMin, onChange: e => set('foldIntervalMin', Number(e.target.value)) }),
               h('span', { className: 'input-suffix' }, 'min'),
@@ -1381,7 +1536,7 @@ function RecipeModal({ recipe, onClose, onSave, onDelete }) {
 // -------------------- Bake tab --------------------
 function bakePhases(recipe) {
   return [
-    { key: 'mix', name: 'Mix & autolyse', duration: 30 * 60000, instr: 'Combine flour, water, levain and salt. Let rest covered.' },
+    { key: 'mix', name: 'Mix & autolyse', duration: 30 * 60000, instr: 'Combine flour, water, starter and salt. Let rest covered.' },
     { key: 'bulk', name: 'Bulk ferment', duration: (recipe.bulkHours || 4.5) * 3600000, instr: `Ferment at room temperature with ${recipe.foldCount} stretch & folds every ${recipe.foldIntervalMin} min.`, folds: true },
     { key: 'preshape', name: 'Pre-shape & bench rest', duration: 30 * 60000, instr: 'Turn out, pre-shape into a round, rest 20–30 min uncovered.' },
     { key: 'shape', name: 'Final shape', duration: 10 * 60000, instr: 'Shape and place seam-up in a floured banneton.' },
@@ -1648,7 +1803,20 @@ function useNotificationScheduler(state) {
 function App() {
   const [state, dispatch] = useReducer(reducer, null, () => {
     const loaded = loadState();
-    return loaded ? { ...defaultState, ...loaded, ui: { ...defaultState.ui, ...(loaded.ui || {}) } } : defaultState;
+    if (!loaded) return defaultState;
+    const merged = { ...defaultState, ...loaded, ui: { ...defaultState.ui, ...(loaded.ui || {}) } };
+    // Migrate old recipes: rename levain -> starter, ensure extras array
+    if (Array.isArray(merged.recipes)) {
+      merged.recipes = merged.recipes.map(r => {
+        const out = { ...r, extras: r.extras || [] };
+        if (out.starter === undefined && out.levain !== undefined) {
+          out.starter = out.levain;
+        }
+        delete out.levain;
+        return out;
+      });
+    }
+    return merged;
   });
   const [toastMsg, setToastMsg] = useState(null);
   const toast = useCallback((msg) => {
