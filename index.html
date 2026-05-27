@@ -69,6 +69,17 @@
     max-width: 720px; margin: 0 auto;
     display: flex; align-items: center; justify-content: space-between;
     padding: 14px 20px;
+    gap: 12px;
+  }
+  @media (max-width: 540px) {
+    .app-header-inner {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+      padding: 12px 16px;
+    }
+    .tabs { width: 100%; }
+    .tab { padding: 7px 8px; font-size: 12px; }
   }
   .brand { display: flex; align-items: center; gap: 10px; }
   .brand-mark {
@@ -316,6 +327,30 @@
     font-size: 12px; color: var(--muted); margin-top: 3px;
     display: flex; gap: 12px; flex-wrap: wrap;
   }
+  .recipe-card.selected {
+    border-color: var(--terracotta);
+    background: linear-gradient(135deg, rgba(196,98,59,0.07), var(--surface));
+    box-shadow: 0 2px 6px rgba(196, 98, 59, 0.15);
+  }
+  .recipe-checkbox {
+    width: 22px; height: 22px;
+    border-radius: 6px;
+    border: 2px solid var(--border);
+    background: var(--surface);
+    display: flex; align-items: center; justify-content: center;
+    color: white;
+    flex-shrink: 0;
+    transition: all 0.15s ease;
+  }
+  .recipe-checkbox.checked {
+    background: var(--terracotta);
+    border-color: var(--terracotta);
+  }
+  .btn-danger {
+    background: var(--rose); color: white;
+    box-shadow: 0 2px 4px rgba(184, 85, 74, 0.25);
+  }
+  .btn-danger:hover { background: #9C4339; }
   .recipe-card-meta span {
     display: inline-flex; align-items: center; gap: 4px;
   }
@@ -466,6 +501,226 @@
   .gap-2 { gap: 8px; }
   .flex { display: flex; }
   .hidden { display: none; }
+
+  /* Star rating */
+  .stars {
+    display: inline-flex; align-items: center; gap: 2px;
+    color: var(--border);
+  }
+  .stars.interactive .star-btn {
+    cursor: pointer; padding: 2px;
+    background: transparent; border: none;
+    color: inherit; transition: transform 0.1s ease;
+  }
+  .stars.interactive .star-btn:hover { transform: scale(1.15); }
+  .star-btn { display: inline-flex; }
+  .star-btn.on { color: var(--amber); }
+  .stars.readonly .star-btn { padding: 0; cursor: default; }
+  .star-meta {
+    font-size: 12px; color: var(--muted);
+    margin-left: 6px; font-weight: 600;
+  }
+
+  /* Review cards */
+  .review-card {
+    background: var(--surface);
+    border: 1px solid var(--border-soft);
+    border-radius: 14px;
+    padding: 16px 18px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    margin-bottom: 12px;
+  }
+  .review-card:hover {
+    border-color: var(--terracotta);
+    box-shadow: var(--shadow-md);
+  }
+  .review-card-title {
+    font-family: 'Fraunces', serif; font-size: 16px; font-weight: 600;
+    color: var(--brown);
+  }
+  .review-card-date {
+    font-size: 12px; color: var(--muted); margin-top: 1px;
+  }
+  .review-card-issues {
+    display: flex; flex-wrap: wrap; gap: 4px;
+    margin-top: 8px;
+  }
+  .issue-pill {
+    background: var(--cream-deep);
+    color: var(--brown-soft);
+    padding: 3px 9px; border-radius: 8px;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+  .review-notes-preview {
+    font-size: 13px; color: var(--brown-soft);
+    margin-top: 8px; line-height: 1.5;
+    display: -webkit-box; -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Diagnosis panel */
+  .diagnosis-panel {
+    background: linear-gradient(135deg, var(--sage-soft), #E0EBD3);
+    border: 1px solid #B7CFA3;
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-top: 14px;
+  }
+  .diagnosis-header {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 10px;
+    font-family: 'Fraunces', serif; font-weight: 600;
+    color: #3D5C24; font-size: 16px;
+  }
+  .diagnosis-headline {
+    font-size: 14px; color: #2E4519;
+    margin-bottom: 14px; padding: 10px 12px;
+    background: rgba(255,255,255,0.5);
+    border-radius: 8px; line-height: 1.5;
+    font-weight: 500;
+  }
+  .diagnosis-item {
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(76, 110, 51, 0.15);
+  }
+  .diagnosis-item:last-child {
+    margin-bottom: 0; padding-bottom: 0; border-bottom: none;
+  }
+  .diagnosis-item-title {
+    font-weight: 700; color: #3D5C24;
+    font-size: 13px; margin-bottom: 4px;
+  }
+  .diagnosis-item-text {
+    font-size: 13px; color: var(--brown);
+    line-height: 1.55;
+  }
+
+  /* Issue category in modal */
+  .issue-group { margin-bottom: 12px; }
+  .issue-group-label {
+    font-size: 11px; font-weight: 700;
+    color: var(--brown-soft);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    margin-bottom: 6px;
+  }
+
+  /* Fun fact card */
+  .fact-card {
+    background: linear-gradient(135deg, var(--amber-soft), #FAEACC 60%, var(--cream-deep));
+    border: 1px solid #E8C796;
+    border-radius: 14px;
+    padding: 16px 18px;
+    display: flex; gap: 14px; align-items: flex-start;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .fact-card::before {
+    content: ''; position: absolute; top: -30px; right: -30px;
+    width: 100px; height: 100px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.4), transparent 70%);
+    pointer-events: none;
+  }
+  .fact-icon {
+    width: 34px; height: 34px;
+    background: var(--surface);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--terracotta);
+    flex-shrink: 0;
+    box-shadow: 0 1px 3px rgba(196, 98, 59, 0.15);
+  }
+  .fact-body { flex: 1; min-width: 0; }
+  .fact-label {
+    font-size: 10px; font-weight: 700;
+    color: #8C5A1F;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .fact-text {
+    font-size: 14px;
+    color: var(--brown);
+    line-height: 1.5;
+  }
+  .fact-shuffle {
+    align-self: flex-start;
+    background: transparent; border: none;
+    color: var(--brown-soft); cursor: pointer;
+    padding: 6px; border-radius: 8px;
+    display: flex; flex-shrink: 0;
+    transition: all 0.15s ease;
+  }
+  .fact-shuffle:hover { background: rgba(255,255,255,0.6); color: var(--terracotta); }
+
+  /* Starter switcher */
+  .starter-switcher {
+    display: flex; gap: 8px;
+    overflow-x: auto;
+    margin-bottom: 18px;
+    padding: 2px 2px 6px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  .starter-switcher::-webkit-scrollbar { height: 6px; }
+  .starter-switcher::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+  .switcher-card {
+    flex-shrink: 0;
+    padding: 12px 16px;
+    border-radius: 14px;
+    background: var(--surface);
+    border: 1px solid var(--border-soft);
+    cursor: pointer;
+    font-family: inherit;
+    display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
+    transition: all 0.15s ease;
+    min-width: 130px;
+    text-align: left;
+  }
+  .switcher-card:hover {
+    border-color: var(--terracotta);
+    transform: translateY(-1px);
+  }
+  .switcher-card.active {
+    background: linear-gradient(135deg, rgba(196, 98, 59, 0.08), rgba(196, 98, 59, 0.02));
+    border-color: var(--terracotta);
+    box-shadow: 0 2px 6px rgba(196, 98, 59, 0.15);
+  }
+  .switcher-card-name {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    color: var(--brown);
+    font-size: 15px;
+    line-height: 1.2;
+  }
+  .switcher-card-meta {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .switcher-card.add {
+    background: transparent;
+    border: 1px dashed var(--border);
+    color: var(--terracotta);
+    font-weight: 600;
+    font-size: 14px;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    gap: 6px;
+    min-width: 110px;
+  }
+  .switcher-card.add:hover {
+    background: rgba(196, 98, 59, 0.06);
+    border-color: var(--terracotta);
+    border-style: solid;
+  }
 
   /* Help tooltips */
   .helptip {
@@ -618,6 +873,275 @@ const EXTRA_SUGGESTIONS = [
   'Cheese', 'Olives', 'Rosemary',
 ];
 
+const SOURDOUGH_FACTS = [
+  "Ancient Egyptians were leavening bread by 4,000 BCE — sourdough is older than the wheel.",
+  "Egyptian hieroglyphs had over 170 different words for bread. It was the foundation of their economy.",
+  "Lactic acid bacteria outnumber yeast in a healthy starter by roughly 100 to 1. The yeast is the famous one, but the bacteria do most of the work.",
+  "A typical starter contains 50+ species of lactic acid bacteria and 20+ species of wild yeast — all living together.",
+  "Sourdough dough technically undergoes alcoholic fermentation. The ethanol bakes off in the oven, which is why your loaf doesn't taste boozy.",
+  "Your starter is geographically unique. The microbes are shaped by your flour, water, climate and even what's on your hands when you mix it.",
+  "Boudin Bakery in San Francisco has kept the same starter alive since 1849, when it was carried west during the Gold Rush.",
+  "San Francisco's iconic sour tang comes from Lactobacillus sanfranciscensis, a bacterium named after the city.",
+  "Gold-rush miners in the 1800s were nicknamed \"sourdoughs\" because they carried their starters everywhere — often tucked inside their coats at night to keep them warm.",
+  "In 2019, the inventor of the Xbox baked bread using yeast extracted from a 4,500-year-old Egyptian baking vessel.",
+  "Sourdough fermentation breaks down phytic acid in flour, making minerals like iron, magnesium and zinc more available to your body.",
+  "The slow fermentation lowers the glycemic index of bread — sourdough spikes your blood sugar less than commercial loaves.",
+  "Some people with mild gluten sensitivity tolerate sourdough better because the long fermentation predigests some of the gluten.",
+  "The Puratos Sourdough Library in Belgium preserves over 150 starters from bakers around the world, kept alive by regular feedings.",
+  "The \"hooch\" — that liquid layer on a hungry starter — is alcohol the yeast produced. You can stir it back in for more sour flavour, or pour it off.",
+  "A starter can survive in the fridge for weeks without feeding. The microbes go dormant, then wake up when you feed them again.",
+  "The dramatic \"ear\" on a well-scored loaf forms because steam expands the crumb in seconds before the crust sets and freezes the shape.",
+  "Wild yeast cells double roughly every 90 minutes under good conditions — that's how a small amount can leaven a whole loaf.",
+  "If you slice a loaf too soon, the inside stays gummy because steam is still cooking the starches. Wait at least an hour.",
+  "Bread predates writing. People were baking flatbread 14,000 years ago — long before agriculture even existed.",
+  "Sourdough has been to the International Space Station. NASA studied it as part of microbe behaviour research in microgravity.",
+  "The \"windowpane test\" — stretching dough thin enough to see light through — tells you the gluten is developed enough.",
+  "Salt slows fermentation. Add it too late and your dough over-proofs; add it too early and it inhibits the starter.",
+  "Higher hydration means a more open, holey crumb — but also a stickier, harder-to-handle dough.",
+  "Cold retarding doesn't just slow fermentation. It changes which bacteria are most active, deepening sour flavour over time.",
+  "Rye flour ferments far faster than wheat because it lacks gluten and is rich in enzymes — 100% rye dough is mixed in minutes, not hours.",
+  "Roman bakers had professional guilds by 168 BC. Skilled bakers were granted citizenship and became wealthy.",
+  "King Tutankhamun was buried with loaves of bread as offerings for the afterlife. Some have been preserved for over 3,300 years.",
+  "Your kitchen's microbes will eventually colonise a starter you bought from someone else. Within a few weeks it becomes \"yours.\"",
+  "A well-maintained sourdough starter can outlive its baker. Some active starters today are tracing back through 5+ generations of one family.",
+];
+
+const RECIPE_LIBRARY = [
+  {
+    id: 'lib-country',
+    name: 'Country Loaf',
+    flours: [
+      { id: 'co-f1', name: 'Bread flour', grams: 450 },
+      { id: 'co-f2', name: 'Whole wheat', grams: 50 },
+    ],
+    water: 360, salt: 10, starter: 100,
+    extras: [],
+    notes: 'Classic 72% hydration country loaf — bread flour with a touch of whole wheat for flavour. The go-to first sourdough. Bake at 250°C in a covered Dutch oven for 20 min, then uncovered at 220°C for 25 min.',
+    bulkHours: 4.5, foldCount: 4, foldIntervalMin: 45,
+    retardHours: 12, bakeMin: 45,
+  },
+  {
+    id: 'lib-brioche',
+    name: 'Sourdough Brioche',
+    flours: [{ id: 'br-f1', name: 'Bread flour', grams: 500 }],
+    water: 50, salt: 10, starter: 100,
+    extras: [
+      { id: 'br-eggs', name: 'Eggs', grams: 250 },
+      { id: 'br-butter', name: 'Butter (softened)', grams: 250 },
+      { id: 'br-sugar', name: 'Sugar', grams: 50 },
+      { id: 'br-milk', name: 'Whole milk', grams: 75 },
+    ],
+    notes: 'Rich, buttery, naturally leavened. Eggs provide most of the hydration. Mix until smooth, then add butter in pieces. Bulk at warm room temp, then long cold retard for flavour. Bake at 180°C for 30–35 min until deep golden.',
+    bulkHours: 5, foldCount: 3, foldIntervalMin: 45,
+    retardHours: 14, bakeMin: 32,
+  },
+  {
+    id: 'lib-baguette',
+    name: 'Sourdough Baguette',
+    flours: [{ id: 'bg-f1', name: 'Bread flour', grams: 500 }],
+    water: 360, salt: 10, starter: 100,
+    extras: [],
+    notes: '72% hydration French baguette. Bulk retard before shaping — the dough is too slack to shape and then chill. Score with 3–4 long overlapping slashes at a shallow angle. Bake at 245°C with heavy steam for 10 min, vent, then 220°C for 12 min.',
+    bulkHours: 2.5, foldCount: 3, foldIntervalMin: 45,
+    retardHours: 24, bakeMin: 22,
+  },
+  {
+    id: 'lib-focaccia',
+    name: 'Sourdough Focaccia',
+    flours: [{ id: 'fo-f1', name: 'Bread flour', grams: 500 }],
+    water: 400, salt: 10, starter: 100,
+    extras: [
+      { id: 'fo-oil', name: 'Olive oil (in dough)', grams: 30 },
+      { id: 'fo-topoil', name: 'Olive oil (for topping)', grams: 30 },
+      { id: 'fo-rosemary', name: 'Rosemary', grams: 5 },
+      { id: 'fo-flaky', name: 'Flaky salt', grams: 5 },
+    ],
+    notes: '80% hydration. Bulk in the pan or a tub, then long cold retard for blistered, airy crumb. Dimple with oiled fingers, top generously, bake at 230°C for 22–25 min until deeply golden.',
+    bulkHours: 4, foldCount: 3, foldIntervalMin: 40,
+    retardHours: 18, bakeMin: 25,
+  },
+  {
+    id: 'lib-ciabatta',
+    name: 'Sourdough Ciabatta',
+    flours: [{ id: 'ci-f1', name: 'Bread flour', grams: 450 }],
+    water: 360, salt: 9, starter: 100,
+    extras: [
+      { id: 'ci-oil', name: 'Olive oil', grams: 15 },
+    ],
+    notes: '80% hydration. Very wet, very gentle handling — coil folds work better than stretch & folds. Cut, don\'t shape. Bake at 240°C with steam for 15 min, then 220°C for 15 min.',
+    bulkHours: 3.5, foldCount: 4, foldIntervalMin: 30,
+    retardHours: 14, bakeMin: 30,
+  },
+  {
+    id: 'lib-whole-wheat',
+    name: 'Whole Wheat Sourdough',
+    flours: [
+      { id: 'ww-f1', name: 'Bread flour', grams: 250 },
+      { id: 'ww-f2', name: 'Whole wheat', grams: 250 },
+    ],
+    water: 400, salt: 10, starter: 100,
+    extras: [],
+    notes: '50/50 whole wheat and bread flour, 80% hydration. Whole wheat absorbs more water and ferments faster — watch your timings. Bake at 240°C covered for 20 min, then 220°C uncovered for 25 min.',
+    bulkHours: 5, foldCount: 4, foldIntervalMin: 45,
+    retardHours: 14, bakeMin: 45,
+  },
+  {
+    id: 'lib-rye',
+    name: '100% Rye Sourdough',
+    flours: [{ id: 'ry-f1', name: 'Dark rye', grams: 500 }],
+    water: 425, salt: 10, starter: 200,
+    extras: [
+      { id: 'ry-caraway', name: 'Caraway seeds', grams: 8 },
+    ],
+    notes: 'Pure rye — no gluten, no folds, no shaping in the usual sense. Mix into a wet paste, scrape into a loaf tin, smooth the top, proof 2–3 hours until cracks appear. Bake at 220°C for 60 min. Wait 24 hours before slicing.',
+    bulkHours: 2, foldCount: 0, foldIntervalMin: 0,
+    retardHours: 0, bakeMin: 60,
+  },
+  {
+    id: 'lib-pizza',
+    name: 'Sourdough Pizza Dough',
+    flours: [{ id: 'pz-f1', name: '00 flour', grams: 500 }],
+    water: 325, salt: 10, starter: 75,
+    extras: [
+      { id: 'pz-oil', name: 'Olive oil', grams: 15 },
+    ],
+    notes: '65% hydration. 00 flour gives the classic Neapolitan stretch (bread flour also works). Long cold ferment develops flavour — 48–72 hours is the sweet spot. Divide into 250g balls before retarding. Bake on a stone at 280°C+ for 6–8 min.',
+    bulkHours: 3, foldCount: 2, foldIntervalMin: 45,
+    retardHours: 48, bakeMin: 8,
+  },
+  {
+    id: 'lib-sandwich',
+    name: 'Sourdough Sandwich Loaf',
+    flours: [{ id: 'sa-f1', name: 'Bread flour', grams: 500 }],
+    water: 300, salt: 9, starter: 100,
+    extras: [
+      { id: 'sa-milk', name: 'Whole milk', grams: 50 },
+      { id: 'sa-butter', name: 'Butter (softened)', grams: 30 },
+      { id: 'sa-sugar', name: 'Sugar or honey', grams: 20 },
+    ],
+    notes: 'Soft, tender, slices cleanly — perfect for toast and sandwiches. Bulk in a tub, then shape into a tight log and proof in a buttered loaf tin. Bake at 200°C for 35–40 min until deeply golden.',
+    bulkHours: 5, foldCount: 3, foldIntervalMin: 45,
+    retardHours: 10, bakeMin: 38,
+  },
+  {
+    id: 'lib-cinnamon',
+    name: 'Sourdough Cinnamon Rolls',
+    flours: [{ id: 'cn-f1', name: 'All-purpose', grams: 500 }],
+    water: 0, salt: 8, starter: 100,
+    extras: [
+      { id: 'cn-milk', name: 'Whole milk (warm)', grams: 250 },
+      { id: 'cn-eggs', name: 'Eggs', grams: 50 },
+      { id: 'cn-butter', name: 'Butter (in dough)', grams: 75 },
+      { id: 'cn-sugar', name: 'Sugar (in dough)', grams: 50 },
+      { id: 'cn-filling-butter', name: 'Butter (filling)', grams: 75 },
+      { id: 'cn-brown', name: 'Brown sugar (filling)', grams: 150 },
+      { id: 'cn-cinnamon', name: 'Cinnamon', grams: 15 },
+    ],
+    notes: 'Mix enriched dough, bulk ferment until puffy, then cold retard overnight in the fridge. Roll out, fill, slice, second proof 1–2 hours at room temp, bake at 180°C for 22–25 min. Top with cream cheese glaze.',
+    bulkHours: 5, foldCount: 0, foldIntervalMin: 0,
+    retardHours: 10, bakeMin: 25,
+  },
+];
+
+const ISSUE_CATEGORIES = {
+  fermentation: 'Fermentation',
+  structure: 'Structure & shape',
+  crumb: 'Crumb',
+  crust: 'Crust',
+  flavor: 'Flavor',
+  handling: 'Handling',
+};
+
+const REVIEW_ISSUES = [
+  {
+    key: 'under-proofed', label: 'Under-proofed', category: 'fermentation',
+    advice: "Tight, dense crumb with no big bubbles means fermentation wasn't complete. Extend bulk fermentation, make sure your starter is actively peaking when you mix, and check the kitchen temperature — under 20°C dramatically slows things down. The dough should feel jiggly and puffy and show bubbles on the surface before shaping.",
+  },
+  {
+    key: 'over-proofed', label: 'Over-proofed', category: 'fermentation',
+    advice: "The dough went too far. The yeast ran out of food and gluten started breaking down. Look for: dough that sits flat instead of holding shape, large irregular holes, sticky surface that won't hold scoring. Next time: shorten bulk by 30–60 min, retard at a colder fridge temperature, or reduce starter %.",
+  },
+  {
+    key: 'too-sour', label: 'Too sour', category: 'flavor',
+    advice: "Excess sour comes from too much acetic and lactic acid. Reduce by: (1) shortening the cold retard (under 12h is mild, 24h+ is tangy), (2) using a younger starter (peaked recently, not deflated), (3) keeping the fridge temperature consistent and cold (warmer fridge = more acid), or (4) lowering the starter percentage.",
+  },
+  {
+    key: 'bland', label: 'Bland / not enough flavor', category: 'flavor',
+    advice: "Bland sourdough needs more fermentation time for flavor compounds to develop. Try: (1) a longer cold retard (24–48h), (2) include 10–20% whole grain flour (whole wheat, rye, spelt), (3) check your salt — should be 1.8–2.2% of flour, (4) generally slower and cooler fermentation builds more flavor than warm and fast.",
+  },
+  {
+    key: 'dense', label: 'Dense / heavy', category: 'structure',
+    advice: "A dense crumb usually means under-proofed dough. Possible causes: starter wasn't at peak when used, bulk fermentation was too short, the kitchen was too cold, or the dough lacked gluten development. Next time: feed the starter ~6h before mixing, watch for ~50–75% rise during bulk, and give 3–4 sets of stretch & folds.",
+  },
+  {
+    key: 'flat', label: 'Flat / no oven spring', category: 'structure',
+    advice: "Poor oven spring means the dough didn't have enough trapped gas or strength to expand. Common causes: over-proofed (no gas left), weak gluten, oven not hot enough, or no steam in the first 10 min. Next time: bake at 240°C+ with steam (or a covered Dutch oven), and proof until ~50% risen — not doubled.",
+  },
+  {
+    key: 'spread', label: 'Spread sideways', category: 'structure',
+    advice: "A loaf that pancakes outward is usually under-strengthened or over-proofed. Build more tension during shaping — really tighten the surface and seal the seam — and make sure your bulk didn't run too long. A stronger flour (12%+ protein) also helps.",
+  },
+  {
+    key: 'no-ear', label: 'No ear / poor scoring', category: 'structure',
+    advice: "The \"ear\" is a flap of crust that forms where you scored. To get one: (1) score deeper and at a shallow ~30° angle, not straight down, (2) use a sharp blade or lame, (3) make sure the dough is well cold-retarded so it holds the score crisply, (4) bake with steam so the crust stays soft long enough to expand.",
+  },
+  {
+    key: 'blowout', label: 'Cracked sides / blowout', category: 'structure',
+    advice: "A blowout (where the loaf splits at the side instead of the top score) means the steam had to escape somewhere, and the scoring wasn't deep or wide enough. Score deeper (about 1 cm), make a longer score, or add a second smaller score to direct the expansion.",
+  },
+  {
+    key: 'gummy', label: 'Gummy center', category: 'crumb',
+    advice: "A gummy center is almost always one of two things: (1) the loaf was sliced too soon — sourdough needs at least 1 hour to finish cooking and set its crumb as it cools, or (2) under-baked. Try baking 5–10 min longer next time, and let the loaf cool fully before cutting.",
+  },
+  {
+    key: 'tunnels', label: 'Tunnels / huge irregular holes', category: 'crumb',
+    advice: "Big tunnels usually mean uneven fermentation or weak shaping. Causes: (1) shaping too loose, leaving big air pockets, (2) dough wasn't degassed enough during pre-shape, (3) overly warm spots during bulk. Next time: pre-shape firmly, give a tight final shape, and ferment evenly without warm/cold swings.",
+  },
+  {
+    key: 'doughy', label: 'Doughy / wet inside', category: 'crumb',
+    advice: "Doughy interior means it's under-baked. Bake longer — sourdough is done at 95–98°C internal temperature. Use a probe thermometer if you have one. Also check: was your loaf much bigger than the recipe called for? Larger loaves need more time at lower temps.",
+  },
+  {
+    key: 'burned-crust', label: 'Burned crust', category: 'crust',
+    advice: "Either your oven runs hot or you baked too long. Try: (1) cover with foil for the last 10 min, (2) drop temperature 10–20°C earlier than the recipe says, (3) move to a lower rack, (4) verify your oven temp with a separate thermometer — many home ovens are off by 15–25°C.",
+  },
+  {
+    key: 'pale-crust', label: 'Pale / soft crust', category: 'crust',
+    advice: "A pale crust means under-baking or no Maillard reaction. Bake longer (even 10 min more won't hurt), increase the oven temperature, vent steam after the first 15–20 min so the crust can dry and brown, or finish a few minutes uncovered if you used a Dutch oven.",
+  },
+  {
+    key: 'tough-crust', label: 'Tough / chewy crust', category: 'crust',
+    advice: "Tough crust usually comes from too little steam, or too low hydration. Try: (1) bake with steam for the first 15–20 min (a covered Dutch oven works perfectly), (2) increase hydration 2–5%, (3) don't over-bake — pull when internal temp hits 95–98°C.",
+  },
+  {
+    key: 'stuck-banneton', label: 'Stuck to banneton', category: 'handling',
+    advice: "Sticking happens when there isn't enough barrier between the dough and basket. Solutions: (1) dust heavily with a 50/50 mix of rice flour and bread flour (rice flour doesn't absorb moisture), (2) use a linen liner, (3) reduce hydration slightly, (4) make sure the dough has good gluten so the surface is taut rather than slack.",
+  },
+];
+
+function diagnosePattern(issueKeys) {
+  const set = new Set(issueKeys);
+  if (set.has('dense') && set.has('flat') && set.has('under-proofed')) {
+    return "Strong signs of under-proofed dough. The yeast didn't have enough time to lift the loaf. Most common fix: extend bulk fermentation until the dough is visibly puffy with surface bubbles, and make sure your starter is at peak when you use it.";
+  }
+  if (set.has('over-proofed') && (set.has('spread') || set.has('tunnels'))) {
+    return "Strong signs of over-proofed dough. Fermentation went too long and the gluten weakened. Shorten bulk by 30–60 min next time, and keep your retard fridge consistently cold.";
+  }
+  if (set.has('gummy') && (set.has('dense') || set.has('doughy'))) {
+    return "Most likely under-baked, or sliced too soon. Try baking 5–10 min longer, and always let the loaf cool to room temperature (at least 1 hour) before cutting.";
+  }
+  if (set.has('too-sour') && set.has('flat')) {
+    return "Long fermentation produced both the sour notes and weakened the gluten. Try a shorter bulk or a colder retard.";
+  }
+  if (set.has('bland') && set.has('dense')) {
+    return "Both flavor and structure suggest the dough didn't ferment long enough. Give it more time at room temp during bulk, or extend the cold retard.";
+  }
+  if (set.has('pale-crust') && set.has('doughy')) {
+    return "Classic signs of under-baking. Increase oven temperature, bake longer, and use a thermometer to confirm 95–98°C internal temp.";
+  }
+  return null;
+}
+
 const GLOSSARY = {
   bulk: 'Bulk ferment: the first major rise after mixing. The dough sits at room temperature for several hours while wild yeast multiplies, building flavour and structure.',
   retard: 'Cold retard: an optional slow rise in the fridge (usually overnight). Slows fermentation, deepens flavour, and makes the dough easier to score and shape.',
@@ -631,31 +1155,24 @@ const GLOSSARY = {
 // ============================================================
 //  Default state
 // ============================================================
+const DEFAULT_STARTER_ID = 'starter-default';
+
 const defaultState = {
-  starter: {
-    name: 'My Starter',
-    ambientTempC: 22,
-    defaultRatio: { starter: 1, flour: 1, water: 1 },
-    defaultFlour: 'Bread flour',
-    feedings: [], // { id, ts, ratio: {starter,flour,water}, tempC, flour, notes }
-  },
-  recipes: [
+  starters: [
     {
-      id: 'sample-country',
-      name: 'Country Loaf',
-      flourTotal: 500,
-      water: 360,
-      salt: 10,
-      starter: 100,
-      extras: [],
-      notes: 'Classic 72% hydration country loaf. Bake at 250°C with steam for 20 min, then 220°C for 25 min.',
-      bulkHours: 4.5,
-      foldCount: 4,
-      foldIntervalMin: 45,
-      retardHours: 12,
-      bakeMin: 45,
+      id: DEFAULT_STARTER_ID,
+      name: 'My Starter',
+      createdAt: Date.now(),
+      ambientTempC: 22,
+      defaultRatio: { starter: 1, flour: 1, water: 1 },
+      defaultFlour: 'Bread flour',
+      feedings: [], // { id, ts, ratio: {starter,flour,water}, tempC, flour, notes }
     },
   ],
+  activeStarterId: DEFAULT_STARTER_ID,
+  recipes: RECIPE_LIBRARY.map(r => ({ ...r, extras: r.extras.map(x => ({ ...x })) })),
+  libraryMerged: true,
+  reviews: [], // { id, recipeId, bakeDate, createdAt, rating, issues: [], notes }
   activeBake: null, // { id, recipeId, startedAt, currentPhase, phaseStartedAt, completedPhases:[], folds:[{ts,done}] }
   notificationsEnabled: false,
   ui: { tab: 'today' },
@@ -670,24 +1187,49 @@ function reducer(state, action) {
       return { ...state, ui: { ...state.ui, tab: action.tab } };
 
     case 'UPDATE_STARTER':
-      return { ...state, starter: { ...state.starter, ...action.patch } };
+      return {
+        ...state,
+        starters: state.starters.map(s => s.id === action.id ? { ...s, ...action.patch } : s),
+      };
+
+    case 'ADD_STARTER':
+      return {
+        ...state,
+        starters: [...state.starters, action.starter],
+        activeStarterId: action.starter.id,
+      };
+
+    case 'DELETE_STARTER': {
+      if (state.starters.length <= 1) return state;
+      const remaining = state.starters.filter(s => s.id !== action.id);
+      return {
+        ...state,
+        starters: remaining,
+        activeStarterId: state.activeStarterId === action.id ? remaining[0].id : state.activeStarterId,
+      };
+    }
+
+    case 'SET_ACTIVE_STARTER':
+      return { ...state, activeStarterId: action.id };
 
     case 'ADD_FEEDING':
       return {
         ...state,
-        starter: {
-          ...state.starter,
-          feedings: [action.feeding, ...state.starter.feedings].slice(0, 100),
-        },
+        starters: state.starters.map(s =>
+          s.id === action.starterId
+            ? { ...s, feedings: [action.feeding, ...s.feedings].slice(0, 100) }
+            : s
+        ),
       };
 
     case 'DELETE_FEEDING':
       return {
         ...state,
-        starter: {
-          ...state.starter,
-          feedings: state.starter.feedings.filter(f => f.id !== action.id),
-        },
+        starters: state.starters.map(s =>
+          s.id === action.starterId
+            ? { ...s, feedings: s.feedings.filter(f => f.id !== action.feedingId) }
+            : s
+        ),
       };
 
     case 'ADD_RECIPE':
@@ -701,6 +1243,21 @@ function reducer(state, action) {
 
     case 'DELETE_RECIPE':
       return { ...state, recipes: state.recipes.filter(r => r.id !== action.id) };
+
+    case 'DELETE_RECIPES':
+      return { ...state, recipes: state.recipes.filter(r => !action.ids.includes(r.id)) };
+
+    case 'ADD_REVIEW':
+      return { ...state, reviews: [action.review, ...(state.reviews || [])] };
+
+    case 'UPDATE_REVIEW':
+      return {
+        ...state,
+        reviews: (state.reviews || []).map(rv => rv.id === action.review.id ? action.review : rv),
+      };
+
+    case 'DELETE_REVIEW':
+      return { ...state, reviews: (state.reviews || []).filter(rv => rv.id !== action.id) };
 
     case 'START_BAKE':
       return {
@@ -759,6 +1316,54 @@ function starterStatus(feedings, ambientTempC) {
   if (elapsedH <= peakEnd) return { state: 'peak', label: 'At peak — use now', color: 'sage', progress: 1, peakH, elapsedH };
   if (elapsedH > 12) return { state: 'hungry', label: 'Hungry — feed soon', color: 'rose', progress: 1, peakH, elapsedH };
   return { state: 'past', label: 'Past peak', color: 'brown', progress: 1, peakH, elapsedH };
+}
+
+function getActiveStarter(state) {
+  return state.starters.find(s => s.id === state.activeStarterId) || state.starters[0];
+}
+
+function totalFlour(recipe) {
+  if (Array.isArray(recipe?.flours)) {
+    return recipe.flours.reduce((sum, f) => sum + (Number(f.grams) || 0), 0);
+  }
+  return Number(recipe?.flourTotal) || 0;
+}
+
+function flourBlendLabel(recipe) {
+  const flours = (recipe?.flours || []).filter(f => Number(f.grams) > 0);
+  if (flours.length === 0) return '';
+  if (flours.length === 1) return flours[0].name;
+  const total = flours.reduce((s, f) => s + Number(f.grams), 0);
+  return flours
+    .map(f => `${Math.round((Number(f.grams) / total) * 100)}% ${f.name}`)
+    .join(' + ');
+}
+
+function ageOfStarter(starter) {
+  if (!starter?.createdAt) return 'unknown';
+  const days = Math.floor((Date.now() - starter.createdAt) / 86400000);
+  if (days < 1) return 'created today';
+  if (days === 1) return '1 day old';
+  if (days < 14) return `${days} days old`;
+  if (days < 60) return `${Math.floor(days / 7)} weeks old`;
+  const months = Math.floor(days / 30);
+  if (months < 12) return `${months} month${months === 1 ? '' : 's'} old`;
+  const years = Math.floor(days / 365);
+  return `${years} year${years === 1 ? '' : 's'} old`;
+}
+
+function ageShort(starter) {
+  if (!starter?.createdAt) return '';
+  const days = Math.floor((Date.now() - starter.createdAt) / 86400000);
+  if (days < 1) return 'new';
+  if (days < 30) return `${days}d`;
+  const months = Math.floor(days / 30);
+  if (months < 12) return `${months}mo`;
+  return `${Math.floor(days / 365)}y`;
+}
+
+function fmtDateOnly(ts) {
+  return new Date(ts).toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' });
 }
 
 // ============================================================
@@ -857,6 +1462,14 @@ const Icon = ({ name, size = 18 }) => {
       h('path', { d: 'M20 6L9 17l-5-5' })),
     arrow: h('g', { fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' },
       h('path', { d: 'M5 12h14M13 5l7 7-7 7' })),
+    shuffle: h('g', { fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' },
+      h('path', { d: 'M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5' })),
+    sparkle: h('g', { fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' },
+      h('path', { d: 'M12 3l2 5 5 2-5 2-2 5-2-5-5-2 5-2z M19 14l1 2 2 1-2 1-1 2-1-2-2-1 2-1z' })),
+    star: h('path', { d: 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z', fill: 'currentColor', stroke: 'currentColor', strokeWidth: 1, strokeLinejoin: 'round' }),
+    'star-outline': h('path', { d: 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z', fill: 'none', stroke: 'currentColor', strokeWidth: 1.5, strokeLinejoin: 'round' }),
+    lightbulb: h('g', { fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' },
+      h('path', { d: 'M9 18h6M10 22h4M12 2a7 7 0 00-4 12.7c.6.5 1 1.3 1 2.1V18h6v-1.2c0-.8.4-1.6 1-2.1A7 7 0 0012 2z' })),
   };
   return h('svg', { width: size, height: size, viewBox: '0 0 24 24', style: { display: 'block' } }, paths[name]);
 };
@@ -864,6 +1477,49 @@ const Icon = ({ name, size = 18 }) => {
 // ============================================================
 //  Components
 // ============================================================
+function StarRating({ value = 0, onChange, size = 18, interactive = false, showMeta = false, count = 0 }) {
+  const handle = (v) => () => { if (interactive && onChange) onChange(v); };
+  return h('span', { className: `stars ${interactive ? 'interactive' : 'readonly'}` },
+    [1, 2, 3, 4, 5].map(i => h('button', {
+      key: i, type: 'button',
+      className: 'star-btn' + (i <= value ? ' on' : ''),
+      onClick: handle(i),
+      tabIndex: interactive ? 0 : -1,
+      'aria-label': interactive ? `${i} star${i === 1 ? '' : 's'}` : null,
+    }, h(Icon, { name: i <= value ? 'star' : 'star-outline', size }))),
+    showMeta && count > 0 && h('span', { className: 'star-meta' }, `${value.toFixed(1)} (${count})`),
+  );
+}
+
+function getRecipeRating(recipeId, reviews) {
+  const rs = (reviews || []).filter(r => r.recipeId === recipeId && r.rating > 0);
+  if (rs.length === 0) return null;
+  const avg = rs.reduce((sum, r) => sum + r.rating, 0) / rs.length;
+  return { avg, count: rs.length };
+}
+
+function FactCard() {
+  const [idx, setIdx] = useState(() => Math.floor(Math.random() * SOURDOUGH_FACTS.length));
+  const shuffle = () => {
+    let next = idx;
+    while (next === idx && SOURDOUGH_FACTS.length > 1) {
+      next = Math.floor(Math.random() * SOURDOUGH_FACTS.length);
+    }
+    setIdx(next);
+  };
+  return h('div', { className: 'fact-card' },
+    h('div', { className: 'fact-icon' }, h(Icon, { name: 'sparkle', size: 18 })),
+    h('div', { className: 'fact-body' },
+      h('div', { className: 'fact-label' }, 'Did you know?'),
+      h('div', { className: 'fact-text' }, SOURDOUGH_FACTS[idx]),
+    ),
+    h('button', {
+      className: 'fact-shuffle', onClick: shuffle,
+      title: 'Show another fact', 'aria-label': 'Show another fact', type: 'button',
+    }, h(Icon, { name: 'shuffle', size: 16 })),
+  );
+}
+
 function HelpTip({ label, text }) {
   const [open, setOpen] = useState(false);
   useEffect(() => {
@@ -899,7 +1555,7 @@ function Header({ tab, setTab }) {
         ),
       ),
       h('nav', { className: 'tabs' },
-        ['today', 'starter', 'recipes', 'bake'].map(t =>
+        ['today', 'starter', 'recipes', 'bake', 'reviews'].map(t =>
           h('button', {
             key: t,
             className: 'tab' + (tab === t ? ' active' : ''),
@@ -924,10 +1580,11 @@ function NotifBanner({ enabled, onEnable }) {
 
 // -------------------- Today tab --------------------
 function TodayTab({ state, dispatch, setTab }) {
-  const status = useMemo(() => starterStatus(state.starter.feedings, state.starter.ambientTempC), [state.starter.feedings, state.starter.ambientTempC, Date.now()]);
-  const last = state.starter.feedings[0];
-  const nextFeedingTs = last ? last.ts + (status.peakH || 5) * 3600000 * 1.1 : null;
+  const active = getActiveStarter(state);
+  const status = useMemo(() => starterStatus(active.feedings, active.ambientTempC), [active.feedings, active.ambientTempC, Date.now()]);
+  const last = active.feedings[0];
   const recipeCount = state.recipes.length;
+  const otherStarters = state.starters.filter(s => s.id !== active.id);
 
   return h('div', null,
     h('h1', null, greeting()),
@@ -937,8 +1594,8 @@ function TodayTab({ state, dispatch, setTab }) {
     h('div', { className: 'card-hero' },
       h('div', { className: 'starter-hero' },
         h('div', null,
-          h('div', { className: 'text-xs text-muted', style: { textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 600 } }, 'Starter'),
-          h('div', { className: 'starter-name' }, state.starter.name),
+          h('div', { className: 'text-xs text-muted', style: { textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 600 } }, `Starter • ${ageShort(active)}`),
+          h('div', { className: 'starter-name' }, active.name),
         ),
         h('span', { className: `badge ${status.color}` }, status.label),
       ),
@@ -972,6 +1629,28 @@ function TodayTab({ state, dispatch, setTab }) {
       ),
     ),
 
+    // Other starters quick list
+    otherStarters.length > 0 && h('div', { className: 'card' },
+      h('div', { className: 'row-between', style: { marginBottom: 10 } },
+        h('h3', null, `Other starters (${otherStarters.length})`),
+        h('button', { className: 'btn btn-ghost btn-sm', onClick: () => setTab('starter') }, 'View all →'),
+      ),
+      otherStarters.map(s => {
+        const st = starterStatus(s.feedings, s.ambientTempC);
+        return h('div', {
+          key: s.id, className: 'feeding-row',
+          style: { cursor: 'pointer' },
+          onClick: () => { dispatch({ type: 'SET_ACTIVE_STARTER', id: s.id }); setTab('starter'); },
+        },
+          h('div', null,
+            h('div', { className: 'feeding-when' }, s.name),
+            h('div', { className: 'feeding-detail' }, `${ageShort(s)} • ${s.feedings.length} feed${s.feedings.length === 1 ? '' : 's'}`),
+          ),
+          h('span', { className: `badge ${st.color}` }, st.label),
+        );
+      }),
+    ),
+
     // Active bake
     state.activeBake
       ? h(ActiveBakeSummary, { state, dispatch, setTab })
@@ -983,6 +1662,9 @@ function TodayTab({ state, dispatch, setTab }) {
           ),
           h('button', { className: 'btn btn-sm', onClick: () => setTab('bake') }, 'Start →'),
         ),
+
+    // Fun fact
+    h(FactCard),
   );
 }
 
@@ -1021,16 +1703,41 @@ function greeting() {
 function StarterTab({ state, dispatch, toast }) {
   const [showFeed, setShowFeed] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const status = useMemo(() => starterStatus(state.starter.feedings, state.starter.ambientTempC), [state.starter.feedings, state.starter.ambientTempC]);
+  const [showAdd, setShowAdd] = useState(false);
+  const active = getActiveStarter(state);
+  const status = useMemo(() => starterStatus(active.feedings, active.ambientTempC), [active.feedings, active.ambientTempC]);
 
   return h('div', null,
+    // Switcher
+    h('div', { className: 'starter-switcher' },
+      state.starters.map(s => {
+        const isActive = s.id === active.id;
+        return h('button', {
+          key: s.id,
+          className: 'switcher-card' + (isActive ? ' active' : ''),
+          onClick: () => dispatch({ type: 'SET_ACTIVE_STARTER', id: s.id }),
+          type: 'button',
+        },
+          h('span', { className: 'switcher-card-name' }, s.name),
+          h('span', { className: 'switcher-card-meta' }, `${ageShort(s)} • ${s.feedings.length} feed${s.feedings.length === 1 ? '' : 's'}`),
+        );
+      }),
+      h('button', {
+        className: 'switcher-card add',
+        onClick: () => setShowAdd(true),
+        type: 'button',
+      }, h(Icon, { name: 'plus', size: 14 }), 'New'),
+    ),
+
     h('div', { className: 'row-between', style: { marginBottom: 4 } },
-      h('h1', null, state.starter.name),
+      h('h1', null, active.name),
       h('button', { className: 'btn-ghost btn btn-sm', onClick: () => setShowSettings(true) },
         h(Icon, { name: 'edit', size: 14 }), 'Settings'
       ),
     ),
-    h('p', { className: 'subtitle' }, `Ambient ${state.starter.ambientTempC}°C • ${state.starter.feedings.length} feedings logged`),
+    h('p', { className: 'subtitle' },
+      `Created ${fmtDateOnly(active.createdAt)} • ${ageOfStarter(active)} • ${active.feedings.length} feeding${active.feedings.length === 1 ? '' : 's'}`
+    ),
 
     // Status card
     h('div', { className: 'card-hero' },
@@ -1038,7 +1745,7 @@ function StarterTab({ state, dispatch, toast }) {
         h('span', { className: `badge ${status.color}`, style: { fontSize: 13, padding: '6px 14px' } }, status.label),
         status.peakH && h('span', { className: 'text-xs text-muted' }, `Cycle ≈ ${fmtHoursPretty(status.peakH)}`),
       ),
-      state.starter.feedings.length > 0 && h(React.Fragment, null,
+      active.feedings.length > 0 && h(React.Fragment, null,
         h('div', { className: 'rise-track' },
           h('div', { className: 'rise-fill', style: { width: `${Math.round(status.progress * 100)}%` } }),
         ),
@@ -1056,9 +1763,9 @@ function StarterTab({ state, dispatch, toast }) {
     // History
     h('div', { className: 'card' },
       h('h3', { style: { marginBottom: 12 } }, 'Feeding history'),
-      state.starter.feedings.length === 0
+      active.feedings.length === 0
         ? h('div', { className: 'text-sm text-muted', style: { padding: '8px 0' } }, 'No feedings yet. Tap "Log feeding" to begin.')
-        : state.starter.feedings.map(f =>
+        : active.feedings.map(f =>
             h('div', { key: f.id, className: 'feeding-row' },
               h('div', null,
                 h('div', { className: 'feeding-when' }, fmtDateTime(f.ts)),
@@ -1070,7 +1777,7 @@ function StarterTab({ state, dispatch, toast }) {
               ),
               h('div', { style: { display: 'flex', alignItems: 'center', gap: 8 } },
                 h('span', { className: 'feeding-ratio' }, `${f.ratio.starter}:${f.ratio.flour}:${f.ratio.water}`),
-                h('button', { className: 'icon-btn', style: { width: 28, height: 28 }, onClick: () => dispatch({ type: 'DELETE_FEEDING', id: f.id }), title: 'Delete' },
+                h('button', { className: 'icon-btn', style: { width: 28, height: 28 }, onClick: () => dispatch({ type: 'DELETE_FEEDING', starterId: active.id, feedingId: f.id }), title: 'Delete' },
                   h(Icon, { name: 'trash', size: 13 })
                 ),
               ),
@@ -1079,32 +1786,49 @@ function StarterTab({ state, dispatch, toast }) {
     ),
 
     showFeed && h(FeedingModal, {
-      state,
+      starter: active,
       onClose: () => setShowFeed(false),
       onSave: (feeding) => {
-        dispatch({ type: 'ADD_FEEDING', feeding });
+        dispatch({ type: 'ADD_FEEDING', starterId: active.id, feeding });
         setShowFeed(false);
         toast('Feeding logged');
       },
     }),
 
     showSettings && h(StarterSettingsModal, {
-      state,
+      starter: active,
+      canDelete: state.starters.length > 1,
       onClose: () => setShowSettings(false),
       onSave: (patch) => {
-        dispatch({ type: 'UPDATE_STARTER', patch });
+        dispatch({ type: 'UPDATE_STARTER', id: active.id, patch });
         setShowSettings(false);
         toast('Settings saved');
+      },
+      onDelete: () => {
+        if (confirm(`Delete "${active.name}"? Feedings will be lost.`)) {
+          dispatch({ type: 'DELETE_STARTER', id: active.id });
+          setShowSettings(false);
+          toast('Starter deleted');
+        }
+      },
+    }),
+
+    showAdd && h(AddStarterModal, {
+      onClose: () => setShowAdd(false),
+      onSave: (starter) => {
+        dispatch({ type: 'ADD_STARTER', starter });
+        setShowAdd(false);
+        toast(`Added "${starter.name}"`);
       },
     }),
   );
 }
 
-function FeedingModal({ state, onClose, onSave }) {
-  const def = state.starter.defaultRatio;
+function FeedingModal({ starter, onClose, onSave }) {
+  const def = starter.defaultRatio;
   const [ratio, setRatio] = useState({ ...def });
-  const [tempC, setTempC] = useState(state.starter.ambientTempC);
-  const [flour, setFlour] = useState(state.starter.defaultFlour || 'Bread flour');
+  const [tempC, setTempC] = useState(starter.ambientTempC);
+  const [flour, setFlour] = useState(starter.defaultFlour || 'Bread flour');
   const [customFlour, setCustomFlour] = useState('');
   const [notes, setNotes] = useState('');
   const [whenMode, setWhenMode] = useState('now');
@@ -1204,20 +1928,26 @@ function FeedingModal({ state, onClose, onSave }) {
   );
 }
 
-function StarterSettingsModal({ state, onClose, onSave }) {
-  const [name, setName] = useState(state.starter.name);
-  const [tempC, setTempC] = useState(state.starter.ambientTempC);
-  const [ratio, setRatio] = useState({ ...state.starter.defaultRatio });
-  const [defaultFlour, setDefaultFlour] = useState(state.starter.defaultFlour || 'Bread flour');
+function StarterSettingsModal({ starter, canDelete, onClose, onSave, onDelete }) {
+  const [name, setName] = useState(starter.name);
+  const [tempC, setTempC] = useState(starter.ambientTempC);
+  const [ratio, setRatio] = useState({ ...starter.defaultRatio });
+  const [createdAt, setCreatedAt] = useState(() => {
+    const d = new Date(starter.createdAt); return d.toISOString().slice(0, 10);
+  });
+  const [defaultFlour, setDefaultFlour] = useState(starter.defaultFlour || 'Bread flour');
   const [customFlour, setCustomFlour] = useState(
-    FLOUR_PRESETS.includes(state.starter.defaultFlour) ? '' : (state.starter.defaultFlour || '')
+    FLOUR_PRESETS.includes(starter.defaultFlour) ? '' : (starter.defaultFlour || '')
   );
   const flourValue = defaultFlour === '__custom__' ? customFlour.trim() : defaultFlour;
 
   const submit = (e) => {
     e.preventDefault();
+    const [y, m, d] = createdAt.split('-').map(Number);
+    const created = new Date(y, m - 1, d, 12, 0).getTime();
     onSave({
       name: name.trim() || 'My Starter',
+      createdAt: created,
       ambientTempC: Number(tempC),
       defaultRatio: ratio,
       defaultFlour: flourValue || 'Bread flour',
@@ -1230,6 +1960,112 @@ function StarterSettingsModal({ state, onClose, onSave }) {
         h('div', { className: 'field' },
           h('label', { className: 'field-label' }, 'Starter name'),
           h('input', { className: 'input', value: name, onChange: e => setName(e.target.value), placeholder: 'e.g. Doughy McDoughface' }),
+        ),
+        h('div', { className: 'field' },
+          h('label', { className: 'field-label' }, 'Created on'),
+          h('input', { type: 'date', className: 'input', value: createdAt, max: new Date().toISOString().slice(0,10), onChange: e => setCreatedAt(e.target.value) }),
+        ),
+        h('div', { className: 'field' },
+          h('label', { className: 'field-label' }, 'Default ambient temperature'),
+          h('div', { className: 'input-suffix-wrap' },
+            h('input', { type: 'number', step: '0.5', min: '5', max: '40', className: 'input', value: tempC, onChange: e => setTempC(e.target.value) }),
+            h('span', { className: 'input-suffix' }, '°C'),
+          ),
+        ),
+        h('div', { className: 'field' },
+          h('label', { className: 'field-label' }, 'Default feeding ratio'),
+          h('div', { className: 'field-row-3' },
+            ['starter','flour','water'].map(k =>
+              h('input', {
+                key: k, type: 'number', step: '0.5', min: '0.5', max: '20',
+                className: 'input', value: ratio[k],
+                onChange: e => setRatio({ ...ratio, [k]: Number(e.target.value) }),
+              })
+            ),
+          ),
+        ),
+        h('div', { className: 'field' },
+          h('label', { className: 'field-label' }, 'Default flour'),
+          h('div', { className: 'chip-row' },
+            FLOUR_PRESETS.map(f =>
+              h('button', {
+                key: f, type: 'button',
+                className: 'chip' + (defaultFlour === f ? ' active' : ''),
+                onClick: () => setDefaultFlour(f),
+              }, f)
+            ),
+            h('button', {
+              type: 'button',
+              className: 'chip' + (defaultFlour === '__custom__' ? ' active' : ''),
+              onClick: () => setDefaultFlour('__custom__'),
+            }, 'Other…'),
+          ),
+          defaultFlour === '__custom__' && h('input', {
+            type: 'text', className: 'input', value: customFlour,
+            onChange: e => setCustomFlour(e.target.value),
+            placeholder: 'e.g. 70% bread + 30% rye',
+          }),
+        ),
+      ),
+      h('div', { className: 'modal-footer' },
+        canDelete && h('button', { type: 'button', className: 'btn btn-danger-ghost', onClick: onDelete },
+          h(Icon, { name: 'trash', size: 14 }), 'Delete starter'
+        ),
+        h('div', { style: { flex: 1 } }),
+        h('button', { type: 'button', className: 'btn', onClick: onClose }, 'Cancel'),
+        h('button', { type: 'submit', className: 'btn btn-primary' }, 'Save'),
+      ),
+    ),
+  );
+}
+
+// -------------------- Add starter modal --------------------
+function AddStarterModal({ onClose, onSave }) {
+  const [name, setName] = useState('');
+  const [createdAt, setCreatedAt] = useState(() => new Date().toISOString().slice(0, 10));
+  const [tempC, setTempC] = useState(22);
+  const [ratio, setRatio] = useState({ starter: 1, flour: 1, water: 1 });
+  const [defaultFlour, setDefaultFlour] = useState('Bread flour');
+  const [customFlour, setCustomFlour] = useState('');
+
+  const flourValue = defaultFlour === '__custom__' ? customFlour.trim() : defaultFlour;
+
+  const submit = (e) => {
+    e.preventDefault();
+    if (!name.trim()) return;
+    const [y, m, d] = createdAt.split('-').map(Number);
+    const created = new Date(y, m - 1, d, 12, 0).getTime();
+    onSave({
+      id: uid(),
+      name: name.trim(),
+      createdAt: created,
+      ambientTempC: Number(tempC),
+      defaultRatio: ratio,
+      defaultFlour: flourValue || 'Bread flour',
+      feedings: [],
+    });
+  };
+
+  return h(Modal, { title: 'New starter', onClose },
+    h('form', { onSubmit: submit },
+      h('div', { className: 'modal-body' },
+        h('div', { className: 'field' },
+          h('label', { className: 'field-label' }, 'Name'),
+          h('input', {
+            className: 'input', value: name,
+            onChange: e => setName(e.target.value),
+            placeholder: 'e.g. Rye Beast, Whole Wheat Wendy',
+            autoFocus: true, required: true,
+          }),
+        ),
+        h('div', { className: 'field' },
+          h('label', { className: 'field-label' }, 'Created on'),
+          h('input', {
+            type: 'date', className: 'input', value: createdAt,
+            max: new Date().toISOString().slice(0, 10),
+            onChange: e => setCreatedAt(e.target.value),
+          }),
+          h('div', { className: 'text-xs text-muted mt-2' }, 'Backdate if your starter has been alive for a while already.'),
         ),
         h('div', { className: 'field' },
           h('label', { className: 'field-label' }, 'Default ambient temperature'),
@@ -1275,7 +2111,7 @@ function StarterSettingsModal({ state, onClose, onSave }) {
       ),
       h('div', { className: 'modal-footer' },
         h('button', { type: 'button', className: 'btn', onClick: onClose }, 'Cancel'),
-        h('button', { type: 'submit', className: 'btn btn-primary' }, 'Save'),
+        h('button', { type: 'submit', className: 'btn btn-primary' }, 'Create starter'),
       ),
     ),
   );
@@ -1284,17 +2120,58 @@ function StarterSettingsModal({ state, onClose, onSave }) {
 // -------------------- Recipes tab --------------------
 function RecipesTab({ state, dispatch, toast, setTab }) {
   const [editing, setEditing] = useState(null); // recipe or 'new'
+  const [selectMode, setSelectMode] = useState(false);
+  const [selected, setSelected] = useState(() => new Set());
+
+  const toggleSelect = (id) => {
+    setSelected(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  };
+  const exitSelect = () => { setSelectMode(false); setSelected(new Set()); };
+  const selectAll = () => setSelected(new Set(state.recipes.map(r => r.id)));
+  const deleteSelected = () => {
+    if (selected.size === 0) return;
+    if (confirm(`Delete ${selected.size} recipe${selected.size === 1 ? '' : 's'}? This cannot be undone.`)) {
+      dispatch({ type: 'DELETE_RECIPES', ids: Array.from(selected) });
+      toast(`Deleted ${selected.size} recipe${selected.size === 1 ? '' : 's'}`);
+      exitSelect();
+    }
+  };
 
   return h('div', null,
-    h('div', { className: 'row-between' },
+    h('div', { className: 'row-between', style: { flexWrap: 'wrap', gap: 8 } },
       h('div', null,
         h('h1', null, 'Recipes'),
-        h('p', { className: 'subtitle' }, `${state.recipes.length} saved`),
+        h('p', { className: 'subtitle', style: { marginBottom: 0 } },
+          selectMode
+            ? `${selected.size} of ${state.recipes.length} selected`
+            : `${state.recipes.length} saved`
+        ),
       ),
-      h('button', { className: 'btn btn-primary', onClick: () => setEditing('new') },
-        h(Icon, { name: 'plus', size: 16 }), 'New recipe',
+      h('div', { style: { display: 'flex', gap: 8, flexWrap: 'wrap' } },
+        selectMode
+          ? h(React.Fragment, null,
+              h('button', { className: 'btn btn-sm', onClick: selectAll }, 'Select all'),
+              h('button', { className: 'btn btn-sm', onClick: exitSelect }, 'Cancel'),
+              selected.size > 0 && h('button', { className: 'btn btn-sm btn-danger', onClick: deleteSelected },
+                h(Icon, { name: 'trash', size: 14 }), `Delete ${selected.size}`,
+              ),
+            )
+          : h(React.Fragment, null,
+              state.recipes.length > 0 && h('button', { className: 'btn btn-sm', onClick: () => setSelectMode(true) },
+                h(Icon, { name: 'check', size: 14 }), 'Select',
+              ),
+              h('button', { className: 'btn btn-primary btn-sm', onClick: () => setEditing('new') },
+                h(Icon, { name: 'plus', size: 16 }), 'New recipe',
+              ),
+            ),
       ),
     ),
+
+    h('div', { style: { height: 16 } }),
 
     state.recipes.length === 0
       ? h('div', { className: 'card' },
@@ -1307,24 +2184,37 @@ function RecipesTab({ state, dispatch, toast, setTab }) {
         )
       : h('div', { className: 'recipe-grid' },
           state.recipes.map(r => {
-            const hydration = Math.round((r.water / r.flourTotal) * 100);
-            const salt = ((r.salt / r.flourTotal) * 100).toFixed(1);
-            const starterPct = Math.round((r.starter / r.flourTotal) * 100);
+            const flourW = totalFlour(r);
+            const hydration = flourW ? Math.round((r.water / flourW) * 100) : 0;
+            const salt = flourW ? ((r.salt / flourW) * 100).toFixed(1) : 0;
+            const starterPct = flourW ? Math.round((r.starter / flourW) * 100) : 0;
             const extrasW = (r.extras || []).reduce((s, x) => s + (Number(x.grams) || 0), 0);
-            const totalWeight = r.flourTotal + r.water + r.salt + r.starter + extrasW;
+            const totalWeight = flourW + r.water + r.salt + r.starter + extrasW;
             const extrasCount = (r.extras || []).length;
-            return h('div', { key: r.id, className: 'recipe-card', onClick: () => setEditing(r) },
-              h('div', { style: { flex: 1 } },
-                h('div', { className: 'recipe-card-title' }, r.name),
+            const blend = flourBlendLabel(r);
+            const isSel = selected.has(r.id);
+            const rating = getRecipeRating(r.id, state.reviews);
+            return h('div', {
+              key: r.id,
+              className: 'recipe-card' + (selectMode && isSel ? ' selected' : ''),
+              onClick: () => selectMode ? toggleSelect(r.id) : setEditing(r),
+            },
+              selectMode && h('div', { className: 'recipe-checkbox' + (isSel ? ' checked' : '') },
+                isSel && h(Icon, { name: 'check', size: 13 }),
+              ),
+              h('div', { style: { flex: 1, minWidth: 0 } },
+                h('div', { style: { display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' } },
+                  h('div', { className: 'recipe-card-title' }, r.name),
+                  rating && h(StarRating, { value: rating.avg, size: 13, showMeta: true, count: rating.count }),
+                ),
                 h('div', { className: 'recipe-card-meta' },
+                  blend && h('span', null, blend),
                   h('span', null, `${hydration}% hydration`),
                   h('span', null, `${starterPct}% starter`),
-                  h('span', null, `${salt}% salt`),
                   extrasCount > 0 && h('span', null, `+${extrasCount} add-in${extrasCount === 1 ? '' : 's'}`),
-                  h('span', null, `${totalWeight}g total`),
                 ),
               ),
-              h('button', {
+              !selectMode && h('button', {
                 className: 'btn btn-sm btn-primary',
                 onClick: (e) => {
                   e.stopPropagation();
@@ -1359,21 +2249,34 @@ function RecipeModal({ recipe, onClose, onSave, onDelete }) {
   const [r, setR] = useState(recipe || {
     id: uid(),
     name: '',
-    flourTotal: 500, water: 360, salt: 10, starter: 100,
+    flours: [{ id: uid(), name: 'Bread flour', grams: 500 }],
+    water: 360, salt: 10, starter: 100,
     extras: [],
     notes: '',
     bulkHours: 4.5, foldCount: 4, foldIntervalMin: 45,
     retardHours: 12, bakeMin: 45,
   });
 
-  const hydration = r.flourTotal ? ((r.water / r.flourTotal) * 100).toFixed(0) : 0;
-  const saltPct = r.flourTotal ? ((r.salt / r.flourTotal) * 100).toFixed(1) : 0;
-  const starterPct = r.flourTotal ? ((r.starter / r.flourTotal) * 100).toFixed(0) : 0;
+  const flours = r.flours || [];
+  const flourTotal = flours.reduce((s, f) => s + (Number(f.grams) || 0), 0);
+  const hydration = flourTotal ? ((r.water / flourTotal) * 100).toFixed(0) : 0;
+  const saltPct = flourTotal ? ((r.salt / flourTotal) * 100).toFixed(1) : 0;
+  const starterPct = flourTotal ? ((r.starter / flourTotal) * 100).toFixed(0) : 0;
   const extras = r.extras || [];
   const extrasTotal = extras.reduce((sum, x) => sum + (Number(x.grams) || 0), 0);
-  const total = (r.flourTotal || 0) + (r.water || 0) + (r.salt || 0) + (r.starter || 0) + extrasTotal;
+  const total = flourTotal + (r.water || 0) + (r.salt || 0) + (r.starter || 0) + extrasTotal;
 
   const set = (k, v) => setR({ ...r, [k]: v });
+
+  const addFlour = () => setR({ ...r, flours: [...flours, { id: uid(), name: '', grams: 0 }] });
+  const updateFlour = (id, patch) => setR({
+    ...r,
+    flours: flours.map(f => f.id === id ? { ...f, ...patch } : f),
+  });
+  const removeFlour = (id) => {
+    if (flours.length <= 1) return; // always keep at least one
+    setR({ ...r, flours: flours.filter(f => f.id !== id) });
+  };
 
   const addExtra = () => setR({ ...r, extras: [...extras, { id: uid(), name: '', grams: 0 }] });
   const updateExtra = (id, patch) => setR({
@@ -1385,10 +2288,16 @@ function RecipeModal({ recipe, onClose, onSave, onDelete }) {
   const submit = (e) => {
     e.preventDefault();
     if (!r.name.trim()) return;
+    const cleanedFlours = flours
+      .filter(f => f.name.trim() && Number(f.grams) > 0)
+      .map(f => ({ ...f, name: f.name.trim(), grams: Number(f.grams) }));
+    if (cleanedFlours.length === 0) {
+      cleanedFlours.push({ id: uid(), name: 'Bread flour', grams: 500 });
+    }
     const cleanedExtras = extras
       .filter(x => x.name.trim() && Number(x.grams) > 0)
       .map(x => ({ ...x, name: x.name.trim(), grams: Number(x.grams) }));
-    onSave({ ...r, name: r.name.trim(), extras: cleanedExtras });
+    onSave({ ...r, name: r.name.trim(), flours: cleanedFlours, extras: cleanedExtras });
   };
 
   return h(Modal, { title: recipe ? 'Edit recipe' : 'New recipe', onClose },
@@ -1396,19 +2305,50 @@ function RecipeModal({ recipe, onClose, onSave, onDelete }) {
       h('datalist', { id: 'extra-ingredients' },
         EXTRA_SUGGESTIONS.map(s => h('option', { key: s, value: s })),
       ),
+      h('datalist', { id: 'flour-options' },
+        FLOUR_PRESETS.map(s => h('option', { key: s, value: s })),
+        ['00 flour', 'Strong bread flour', 'Light rye', 'Semolina', 'Buckwheat', 'Khorasan'].map(s => h('option', { key: s, value: s })),
+      ),
       h('div', { className: 'modal-body' },
         h('div', { className: 'field' },
           h('label', { className: 'field-label' }, 'Name'),
           h('input', { className: 'input', value: r.name, onChange: e => set('name', e.target.value), placeholder: 'e.g. Saturday Sourdough', autoFocus: true, required: true }),
         ),
-        h('div', { className: 'field-row' },
-          h('div', { className: 'field' },
-            h('label', { className: 'field-label' }, 'Flour'),
-            h('div', { className: 'input-suffix-wrap' },
-              h('input', { type: 'number', min: '0', className: 'input', value: r.flourTotal, onChange: e => set('flourTotal', Number(e.target.value)) }),
-              h('span', { className: 'input-suffix' }, 'g'),
-            ),
+
+        // Flours (multi)
+        h('div', { className: 'field' },
+          h('label', { className: 'field-label' }, `Flour${flours.length > 1 ? ` (${flourTotal}g total)` : ''}`),
+          flours.map(f =>
+            h('div', { key: f.id, className: 'extra-row' },
+              h('input', {
+                type: 'text',
+                list: 'flour-options',
+                className: 'input',
+                placeholder: 'Flour type',
+                value: f.name,
+                onChange: e => updateFlour(f.id, { name: e.target.value }),
+              }),
+              h('div', { className: 'input-suffix-wrap' },
+                h('input', { type: 'number', min: '0', className: 'input', value: f.grams, onChange: e => updateFlour(f.id, { grams: e.target.value }) }),
+                h('span', { className: 'input-suffix' }, 'g'),
+              ),
+              h('button', {
+                type: 'button',
+                className: 'icon-btn',
+                onClick: () => removeFlour(f.id),
+                disabled: flours.length <= 1,
+                title: flours.length <= 1 ? 'At least one flour required' : 'Remove',
+                'aria-label': 'Remove flour',
+                style: flours.length <= 1 ? { opacity: 0.3, cursor: 'not-allowed' } : null,
+              }, h(Icon, { name: 'close', size: 14 })),
+            )
           ),
+          h('button', { type: 'button', className: 'btn btn-sm', style: { marginTop: 4 }, onClick: addFlour },
+            h(Icon, { name: 'plus', size: 14 }), 'Add another flour',
+          ),
+        ),
+
+        h('div', { className: 'field-row' },
           h('div', { className: 'field' },
             h('label', { className: 'field-label' },
               h(HelpTip, { label: `Water (${hydration}%)`, text: GLOSSARY.hydration })
@@ -1418,8 +2358,6 @@ function RecipeModal({ recipe, onClose, onSave, onDelete }) {
               h('span', { className: 'input-suffix' }, 'g'),
             ),
           ),
-        ),
-        h('div', { className: 'field-row' },
           h('div', { className: 'field' },
             h('label', { className: 'field-label' },
               h(HelpTip, { label: `Salt (${saltPct}%)`, text: GLOSSARY.salt })
@@ -1429,14 +2367,14 @@ function RecipeModal({ recipe, onClose, onSave, onDelete }) {
               h('span', { className: 'input-suffix' }, 'g'),
             ),
           ),
-          h('div', { className: 'field' },
-            h('label', { className: 'field-label' },
-              h(HelpTip, { label: `Starter (${starterPct}%)`, text: GLOSSARY.starter })
-            ),
-            h('div', { className: 'input-suffix-wrap' },
-              h('input', { type: 'number', min: '0', className: 'input', value: r.starter, onChange: e => set('starter', Number(e.target.value)) }),
-              h('span', { className: 'input-suffix' }, 'g'),
-            ),
+        ),
+        h('div', { className: 'field' },
+          h('label', { className: 'field-label' },
+            h(HelpTip, { label: `Starter (${starterPct}%)`, text: GLOSSARY.starter })
+          ),
+          h('div', { className: 'input-suffix-wrap' },
+            h('input', { type: 'number', min: '0', className: 'input', value: r.starter, onChange: e => set('starter', Number(e.target.value)) }),
+            h('span', { className: 'input-suffix' }, 'g'),
           ),
         ),
 
@@ -1571,7 +2509,7 @@ function buildFolds(recipe, bulkStart) {
   return folds;
 }
 
-function BakeTab({ state, dispatch, toast }) {
+function BakeTab({ state, dispatch, toast, onFinishBake }) {
   const [tick, setTick] = useState(0);
   useEffect(() => {
     const id = setInterval(() => setTick(t => t + 1), 1000);
@@ -1628,9 +2566,8 @@ function BakeTab({ state, dispatch, toast }) {
 
   const advance = () => {
     if (bake.currentPhase >= phases.length - 1) {
-      // Finished
-      dispatch({ type: 'CANCEL_BAKE' });
-      toast('Bake complete — enjoy your loaf!');
+      // Finished — hand off to App to open the review prompt
+      onFinishBake(bake);
       return;
     }
     dispatch({
@@ -1721,6 +2658,264 @@ function BakeTab({ state, dispatch, toast }) {
   );
 }
 
+// -------------------- Reviews tab --------------------
+function ReviewsTab({ state, dispatch, toast }) {
+  const [creating, setCreating] = useState(false);
+  const [editing, setEditing] = useState(null);
+  const [viewing, setViewing] = useState(null);
+  const reviews = state.reviews || [];
+
+  return h('div', null,
+    h('div', { className: 'row-between', style: { flexWrap: 'wrap', gap: 8 } },
+      h('div', null,
+        h('h1', null, 'Reviews'),
+        h('p', { className: 'subtitle', style: { marginBottom: 0 } },
+          reviews.length === 0 ? 'Track how your bakes turn out' : `${reviews.length} review${reviews.length === 1 ? '' : 's'}`,
+        ),
+      ),
+      state.recipes.length > 0 && h('button', { className: 'btn btn-primary btn-sm', onClick: () => setCreating(true) },
+        h(Icon, { name: 'plus', size: 16 }), 'New review',
+      ),
+    ),
+
+    h('div', { style: { height: 16 } }),
+
+    reviews.length === 0
+      ? h('div', { className: 'card' },
+          h('div', { className: 'empty' },
+            h('div', { className: 'empty-mark' }, h(Icon, { name: 'star-outline', size: 24 })),
+            h('div', { className: 'empty-title' }, 'No reviews yet'),
+            h('div', { className: 'empty-text' }, 'After each bake, log how it turned out — what worked, what didn\'t — and Crumb will help diagnose what to try next time.'),
+            state.recipes.length > 0 && h('button', { className: 'btn btn-primary', onClick: () => setCreating(true) }, 'Write first review'),
+          ),
+        )
+      : reviews.map(rv => {
+          const recipe = state.recipes.find(r => r.id === rv.recipeId);
+          const issuePillsLabels = (rv.issues || []).slice(0, 4).map(key => {
+            const issue = REVIEW_ISSUES.find(i => i.key === key);
+            return issue ? issue.label : key;
+          });
+          const moreCount = (rv.issues || []).length - issuePillsLabels.length;
+          return h('div', {
+            key: rv.id, className: 'review-card',
+            onClick: () => setViewing(rv),
+          },
+            h('div', { className: 'row-between', style: { gap: 12 } },
+              h('div', { style: { flex: 1, minWidth: 0 } },
+                h('div', { className: 'review-card-title' }, recipe ? recipe.name : '(deleted recipe)'),
+                h('div', { className: 'review-card-date' }, `Baked ${fmtDateOnly(rv.bakeDate)}`),
+              ),
+              h(StarRating, { value: rv.rating, size: 16 }),
+            ),
+            (rv.issues || []).length > 0 && h('div', { className: 'review-card-issues' },
+              ...issuePillsLabels.map((label, i) => h('span', { key: i, className: 'issue-pill' }, label)),
+              moreCount > 0 && h('span', { className: 'issue-pill' }, `+${moreCount} more`),
+            ),
+            rv.notes && h('div', { className: 'review-notes-preview' }, rv.notes),
+          );
+        }),
+
+    creating && h(ReviewModal, {
+      state,
+      preselectRecipeId: null,
+      onClose: () => setCreating(false),
+      onSave: (review) => {
+        dispatch({ type: 'ADD_REVIEW', review });
+        setCreating(false);
+        toast('Review saved');
+      },
+    }),
+
+    editing && h(ReviewModal, {
+      state,
+      review: editing,
+      onClose: () => setEditing(null),
+      onSave: (review) => {
+        dispatch({ type: 'UPDATE_REVIEW', review });
+        setEditing(null);
+        setViewing(review);
+        toast('Review updated');
+      },
+    }),
+
+    viewing && h(ReviewDetailModal, {
+      state,
+      review: viewing,
+      onClose: () => setViewing(null),
+      onEdit: () => { setEditing(viewing); setViewing(null); },
+      onDelete: () => {
+        if (confirm('Delete this review?')) {
+          dispatch({ type: 'DELETE_REVIEW', id: viewing.id });
+          setViewing(null);
+          toast('Review deleted');
+        }
+      },
+    }),
+  );
+}
+
+function ReviewModal({ state, review, preselectRecipeId, onClose, onSave }) {
+  const [rv, setRv] = useState(review || {
+    id: uid(),
+    recipeId: preselectRecipeId || (state.recipes[0]?.id || ''),
+    bakeDate: Date.now(),
+    createdAt: Date.now(),
+    rating: 0,
+    issues: [],
+    notes: '',
+  });
+
+  const [bakeDateStr, setBakeDateStr] = useState(() => {
+    const d = new Date(rv.bakeDate);
+    return d.toISOString().slice(0, 10);
+  });
+
+  const set = (k, v) => setRv({ ...rv, [k]: v });
+  const toggleIssue = (key) => {
+    const has = rv.issues.includes(key);
+    set('issues', has ? rv.issues.filter(k => k !== key) : [...rv.issues, key]);
+  };
+
+  // group issues by category
+  const grouped = Object.keys(ISSUE_CATEGORIES).map(cat => ({
+    key: cat,
+    label: ISSUE_CATEGORIES[cat],
+    issues: REVIEW_ISSUES.filter(i => i.category === cat),
+  })).filter(g => g.issues.length > 0);
+
+  const submit = (e) => {
+    e.preventDefault();
+    if (!rv.recipeId) return;
+    const [y, m, d] = bakeDateStr.split('-').map(Number);
+    const bakeTs = new Date(y, m - 1, d, 12, 0).getTime();
+    onSave({ ...rv, bakeDate: bakeTs, notes: rv.notes.trim() });
+  };
+
+  return h(Modal, { title: review ? 'Edit review' : 'How did it turn out?', onClose },
+    h('form', { onSubmit: submit },
+      h('div', { className: 'modal-body' },
+        h('div', { className: 'field' },
+          h('label', { className: 'field-label' }, 'Recipe'),
+          h('select', {
+            className: 'select',
+            value: rv.recipeId,
+            onChange: e => set('recipeId', e.target.value),
+            required: true,
+          },
+            state.recipes.map(r => h('option', { key: r.id, value: r.id }, r.name)),
+          ),
+        ),
+        h('div', { className: 'field' },
+          h('label', { className: 'field-label' }, 'Bake date'),
+          h('input', {
+            type: 'date', className: 'input',
+            value: bakeDateStr,
+            max: new Date().toISOString().slice(0, 10),
+            onChange: e => setBakeDateStr(e.target.value),
+          }),
+        ),
+        h('div', { className: 'field' },
+          h('label', { className: 'field-label' }, 'Rating'),
+          h(StarRating, { value: rv.rating, interactive: true, onChange: (v) => set('rating', v), size: 28 }),
+        ),
+        h('div', { className: 'field' },
+          h('label', { className: 'field-label' }, 'What happened? (select any that apply)'),
+          h('div', { className: 'text-xs text-muted', style: { marginBottom: 10 } },
+            'Tap each issue you noticed. Crumb will suggest what might have caused it.'
+          ),
+          grouped.map(g =>
+            h('div', { key: g.key, className: 'issue-group' },
+              h('div', { className: 'issue-group-label' }, g.label),
+              h('div', { className: 'chip-row' },
+                g.issues.map(issue =>
+                  h('button', {
+                    key: issue.key, type: 'button',
+                    className: 'chip' + (rv.issues.includes(issue.key) ? ' active' : ''),
+                    onClick: () => toggleIssue(issue.key),
+                  }, issue.label)
+                ),
+              ),
+            )
+          ),
+        ),
+        h('div', { className: 'field' },
+          h('label', { className: 'field-label' }, 'Notes (optional)'),
+          h('textarea', {
+            className: 'textarea',
+            value: rv.notes,
+            onChange: e => set('notes', e.target.value),
+            placeholder: 'Bulk took 6h not 4h, used cooler kitchen, sliced after 30 min…',
+          }),
+        ),
+        rv.issues.length > 0 && h('div', { className: 'text-xs text-muted', style: { marginTop: -4 } },
+          `${rv.issues.length} issue${rv.issues.length === 1 ? '' : 's'} selected — diagnosis appears after saving.`
+        ),
+      ),
+      h('div', { className: 'modal-footer' },
+        h('button', { type: 'button', className: 'btn', onClick: onClose }, 'Cancel'),
+        h('button', { type: 'submit', className: 'btn btn-primary' }, review ? 'Save changes' : 'Save review'),
+      ),
+    ),
+  );
+}
+
+function ReviewDetailModal({ state, review, onClose, onEdit, onDelete }) {
+  const recipe = state.recipes.find(r => r.id === review.recipeId);
+  const issueDetails = (review.issues || [])
+    .map(key => REVIEW_ISSUES.find(i => i.key === key))
+    .filter(Boolean);
+  const pattern = diagnosePattern(review.issues || []);
+
+  return h(Modal, { title: recipe ? recipe.name : 'Review', onClose },
+    h('div', null,
+      h('div', { className: 'modal-body' },
+        h('div', { className: 'row-between', style: { marginBottom: 14 } },
+          h('div', null,
+            h('div', { className: 'text-xs text-muted', style: { textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 600 } }, 'Baked'),
+            h('div', { style: { fontFamily: 'Fraunces, serif', fontSize: 18, fontWeight: 600, color: 'var(--brown)' } }, fmtDateOnly(review.bakeDate)),
+          ),
+          h(StarRating, { value: review.rating, size: 22 }),
+        ),
+
+        review.notes && h('div', { className: 'card', style: { marginBottom: 14, background: 'var(--cream-deep)', borderColor: 'var(--border-soft)' } },
+          h('div', { className: 'text-xs text-muted', style: { textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 600, marginBottom: 6 } }, 'Your notes'),
+          h('div', { style: { fontSize: 14, color: 'var(--brown)', lineHeight: 1.55, whiteSpace: 'pre-wrap' } }, review.notes),
+        ),
+
+        issueDetails.length > 0 && h('div', { className: 'diagnosis-panel' },
+          h('div', { className: 'diagnosis-header' },
+            h(Icon, { name: 'lightbulb', size: 18 }), 'Diagnosis & tips',
+          ),
+          pattern && h('div', { className: 'diagnosis-headline' }, pattern),
+          issueDetails.map(issue =>
+            h('div', { key: issue.key, className: 'diagnosis-item' },
+              h('div', { className: 'diagnosis-item-title' }, issue.label),
+              h('div', { className: 'diagnosis-item-text' }, issue.advice),
+            )
+          ),
+        ),
+
+        issueDetails.length === 0 && review.rating >= 4 && h('div', { className: 'diagnosis-panel' },
+          h('div', { className: 'diagnosis-header' },
+            h(Icon, { name: 'sparkle', size: 18 }), 'Nice bake!',
+          ),
+          h('div', { className: 'diagnosis-item-text' }, "No issues flagged and a strong rating. Whatever you did, do it again — keep your starter routine, ferment timings, and kitchen temperature consistent and you'll repeat this result."),
+        ),
+      ),
+      h('div', { className: 'modal-footer' },
+        h('button', { type: 'button', className: 'btn btn-danger-ghost', onClick: onDelete },
+          h(Icon, { name: 'trash', size: 14 }), 'Delete',
+        ),
+        h('div', { style: { flex: 1 } }),
+        h('button', { type: 'button', className: 'btn', onClick: onEdit },
+          h(Icon, { name: 'edit', size: 14 }), 'Edit',
+        ),
+        h('button', { type: 'button', className: 'btn btn-primary', onClick: onClose }, 'Done'),
+      ),
+    ),
+  );
+}
+
 // -------------------- Modal wrapper --------------------
 function Modal({ title, onClose, children }) {
   useEffect(() => {
@@ -1774,27 +2969,28 @@ function useNotificationScheduler(state) {
         }
       }
 
-      // Starter peak window
-      const last = state.starter.feedings[0];
-      if (last) {
-        const peakH = predictPeakHours(last.ratio, last.tempC ?? state.starter.ambientTempC);
+      // Starter peak windows — one for each starter
+      state.starters.forEach(s => {
+        const last = s.feedings[0];
+        if (!last) return;
+        const peakH = predictPeakHours(last.ratio, last.tempC ?? s.ambientTempC);
         const peakTs = last.ts + peakH * 3600000;
-        const peakKey = `peak-${last.id}`;
+        const peakKey = `peak-${s.id}-${last.id}`;
         if (now >= peakTs && now < peakTs + 60000 && !fired.current.has(peakKey)) {
           fired.current.add(peakKey);
-          showNotification('Crumb', `${state.starter.name} should be at its peak — ready to use.`);
+          showNotification('Crumb', `${s.name} should be at its peak — ready to use.`);
         }
         const hungryTs = last.ts + 14 * 3600000;
-        const hungryKey = `hungry-${last.id}`;
+        const hungryKey = `hungry-${s.id}-${last.id}`;
         if (now >= hungryTs && now < hungryTs + 60000 && !fired.current.has(hungryKey)) {
           fired.current.add(hungryKey);
-          showNotification('Crumb', `${state.starter.name} is getting hungry — feed it soon.`);
+          showNotification('Crumb', `${s.name} is getting hungry — feed it soon.`);
         }
-      }
+      });
     }, 30000); // check every 30s
 
     return () => clearInterval(interval);
-  }, [state.notificationsEnabled, state.activeBake, state.starter.feedings, state.recipes, state.starter.name, state.starter.ambientTempC]);
+  }, [state.notificationsEnabled, state.activeBake, state.starters, state.recipes]);
 }
 
 // ============================================================
@@ -1805,16 +3001,69 @@ function App() {
     const loaded = loadState();
     if (!loaded) return defaultState;
     const merged = { ...defaultState, ...loaded, ui: { ...defaultState.ui, ...(loaded.ui || {}) } };
-    // Migrate old recipes: rename levain -> starter, ensure extras array
+
+    // Migrate single starter -> starters array
+    if (loaded.starter && !Array.isArray(loaded.starters)) {
+      const earliestFeeding = loaded.starter.feedings?.length
+        ? Math.min(...loaded.starter.feedings.map(f => f.ts))
+        : Date.now();
+      const migratedStarter = {
+        id: DEFAULT_STARTER_ID,
+        createdAt: earliestFeeding,
+        ...loaded.starter,
+      };
+      merged.starters = [migratedStarter];
+      merged.activeStarterId = DEFAULT_STARTER_ID;
+      delete merged.starter;
+    }
+    // Ensure every starter has an id + createdAt
+    if (Array.isArray(merged.starters)) {
+      merged.starters = merged.starters.map(s => ({
+        ...s,
+        id: s.id || uid(),
+        createdAt: s.createdAt || (s.feedings?.length ? Math.min(...s.feedings.map(f => f.ts)) : Date.now()),
+        feedings: s.feedings || [],
+      }));
+      if (!merged.starters.find(s => s.id === merged.activeStarterId)) {
+        merged.activeStarterId = merged.starters[0]?.id || DEFAULT_STARTER_ID;
+      }
+    }
+
+    // Migrate old recipes: rename levain -> starter, ensure extras array,
+    // convert flourTotal -> flours array, rename old sample-country id to lib-country
     if (Array.isArray(merged.recipes)) {
+      const seenIds = new Set();
       merged.recipes = merged.recipes.map(r => {
         const out = { ...r, extras: r.extras || [] };
         if (out.starter === undefined && out.levain !== undefined) {
           out.starter = out.levain;
         }
         delete out.levain;
+        // Convert flourTotal -> flours
+        if (!Array.isArray(out.flours)) {
+          out.flours = [{ id: uid(), name: 'Bread flour', grams: Number(out.flourTotal) || 500 }];
+        }
+        delete out.flourTotal;
+        if (out.id === 'sample-country' && !merged.recipes.find(x => x.id === 'lib-country')) {
+          out.id = 'lib-country';
+        }
+        while (seenIds.has(out.id)) out.id = uid();
+        seenIds.add(out.id);
         return out;
       });
+    }
+
+    // Ensure reviews array exists
+    if (!Array.isArray(merged.reviews)) merged.reviews = [];
+
+    // One-time auto-merge of recipe library for users on older versions
+    if (!loaded.libraryMerged) {
+      const have = new Set((merged.recipes || []).map(r => r.id));
+      const toAdd = RECIPE_LIBRARY
+        .filter(r => !have.has(r.id))
+        .map(r => ({ ...r, extras: r.extras.map(x => ({ ...x })) }));
+      merged.recipes = [...(merged.recipes || []), ...toAdd];
+      merged.libraryMerged = true;
     }
     return merged;
   });
@@ -1838,6 +3087,13 @@ function App() {
 
   const setTab = (tab) => dispatch({ type: 'SET_TAB', tab });
 
+  const [pendingReview, setPendingReview] = useState(null);
+  const onFinishBake = (bake) => {
+    dispatch({ type: 'CANCEL_BAKE' });
+    toast('Bake complete — enjoy your loaf!');
+    setPendingReview({ recipeId: bake.recipeId });
+  };
+
   const enableNotifs = async () => {
     const ok = await requestNotificationPermission();
     dispatch({ type: 'SET_NOTIFICATIONS', enabled: ok });
@@ -1858,8 +3114,19 @@ function App() {
       tab === 'today' && h(TodayTab, { state, dispatch, setTab }),
       tab === 'starter' && h(StarterTab, { state, dispatch, toast }),
       tab === 'recipes' && h(RecipesTab, { state, dispatch, toast, setTab }),
-      tab === 'bake' && h(BakeTab, { state, dispatch, toast }),
+      tab === 'bake' && h(BakeTab, { state, dispatch, toast, onFinishBake }),
+      tab === 'reviews' && h(ReviewsTab, { state, dispatch, toast }),
     ),
+    pendingReview && h(ReviewModal, {
+      state,
+      preselectRecipeId: pendingReview.recipeId,
+      onClose: () => setPendingReview(null),
+      onSave: (review) => {
+        dispatch({ type: 'ADD_REVIEW', review });
+        setPendingReview(null);
+        toast('Review saved');
+      },
+    }),
     toastMsg && h('div', { className: 'toast' }, toastMsg),
   );
 }
