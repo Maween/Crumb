@@ -1,0 +1,1734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#C4623B" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="Crumb" />
+<title>Crumb — Sourdough, one rise at a time</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" />
+
+<!-- Inline SVG favicon (wheat ear in terracotta) -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23C4623B'/><path d='M50 18 L50 82 M50 30 Q40 32 36 42 Q46 44 50 38 Q54 44 64 42 Q60 32 50 30 M50 46 Q40 48 36 58 Q46 60 50 54 Q54 60 64 58 Q60 48 50 46 M50 62 Q40 64 36 74 Q46 76 50 70 Q54 76 64 74 Q60 64 50 62' stroke='%23FBF7F0' stroke-width='3.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>" />
+
+<!-- PWA manifest (inline as data URL) -->
+<link rel="manifest" href='data:application/manifest+json;utf8,{"name":"Crumb — Sourdough Companion","short_name":"Crumb","description":"Track your starter, manage recipes, time your bakes.","start_url":".","display":"standalone","orientation":"portrait","background_color":"%23FBF7F0","theme_color":"%23C4623B","icons":[{"src":"data:image/svg%2Bxml;utf8,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 512 512%27><rect width=%27512%27 height=%27512%27 rx=%27112%27 fill=%27%23C4623B%27/><path d=%27M256 92 L256 420 M256 154 Q204 164 184 216 Q236 226 256 196 Q276 226 328 216 Q308 164 256 154 M256 236 Q204 246 184 298 Q236 308 256 278 Q276 308 328 298 Q308 246 256 236 M256 318 Q204 328 184 380 Q236 390 256 360 Q276 390 328 380 Q308 328 256 318%27 stroke=%27%23FBF7F0%27 stroke-width=%2718%27 fill=%27none%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/></svg>","sizes":"512x512","type":"image/svg+xml","purpose":"any"}]}' />
+
+<style>
+  :root {
+    --cream: #FBF7F0;
+    --cream-deep: #F4EEE2;
+    --surface: #FFFEFB;
+    --terracotta: #C4623B;
+    --terracotta-deep: #A04E2C;
+    --brown: #3D2817;
+    --brown-soft: #5C4631;
+    --muted: #8A7659;
+    --border: #E8DFD0;
+    --border-soft: #F1E9DA;
+    --sage: #7BA85C;
+    --sage-soft: #C8DBB8;
+    --amber: #E89B3C;
+    --amber-soft: #F8DEB6;
+    --rose: #B8554A;
+    --rose-soft: #EBC4BC;
+    --shadow-sm: 0 1px 2px rgba(61, 40, 23, 0.04), 0 1px 3px rgba(61, 40, 23, 0.06);
+    --shadow-md: 0 4px 12px rgba(61, 40, 23, 0.06), 0 2px 4px rgba(61, 40, 23, 0.04);
+    --shadow-lg: 0 12px 28px rgba(61, 40, 23, 0.08), 0 4px 8px rgba(61, 40, 23, 0.04);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--cream);
+    color: var(--brown);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+
+  #root { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; }
+
+  /* ==== Header ==== */
+  .app-header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border-soft);
+    padding: env(safe-area-inset-top) 0 0 0;
+    position: sticky; top: 0; z-index: 50;
+    backdrop-filter: blur(12px);
+    background: rgba(255, 254, 251, 0.92);
+  }
+  .app-header-inner {
+    max-width: 720px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 20px;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand-mark {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: var(--terracotta);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 6px rgba(196, 98, 59, 0.3);
+  }
+  .brand-name {
+    font-family: 'Fraunces', serif;
+    font-weight: 600; font-size: 22px;
+    letter-spacing: -0.02em;
+    color: var(--brown);
+  }
+  .brand-tag {
+    font-size: 11px; color: var(--muted);
+    letter-spacing: 0.04em; text-transform: uppercase;
+    font-weight: 500; margin-top: -2px;
+  }
+
+  /* ==== Tab nav ==== */
+  .tabs {
+    display: flex; gap: 2px;
+    background: var(--cream-deep);
+    padding: 4px; border-radius: 12px;
+  }
+  .tab {
+    flex: 1; padding: 8px 14px;
+    border: none; background: transparent;
+    font-family: inherit; font-size: 13px; font-weight: 500;
+    color: var(--muted); cursor: pointer; border-radius: 9px;
+    transition: all 0.18s ease;
+    white-space: nowrap;
+  }
+  .tab:hover { color: var(--brown-soft); }
+  .tab.active {
+    background: var(--surface);
+    color: var(--brown);
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* ==== Main ==== */
+  main {
+    flex: 1;
+    max-width: 720px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 24px 20px calc(80px + env(safe-area-inset-bottom));
+  }
+
+  /* ==== Headings ==== */
+  h1, h2, h3, h4 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    color: var(--brown);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+  h1 { font-size: 28px; margin-bottom: 4px; }
+  h2 { font-size: 22px; margin-bottom: 16px; }
+  h3 { font-size: 17px; font-weight: 600; }
+  .subtitle { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
+
+  /* ==== Cards ==== */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border-soft);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 16px;
+  }
+  .card-hero {
+    background: linear-gradient(135deg, var(--cream-deep) 0%, var(--surface) 100%);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: var(--shadow-md);
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .card-hero::before {
+    content: ''; position: absolute; top: -40px; right: -40px;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(196, 98, 59, 0.07), transparent 70%);
+  }
+
+  /* ==== Status badges ==== */
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; border-radius: 999px;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.02em;
+  }
+  .badge::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: currentColor;
+  }
+  .badge.sage { background: var(--sage-soft); color: #4A6B33; }
+  .badge.amber { background: var(--amber-soft); color: #8C5A1F; }
+  .badge.rose { background: var(--rose-soft); color: #8A3329; }
+  .badge.brown { background: var(--cream-deep); color: var(--brown-soft); }
+  .badge.terracotta { background: rgba(196, 98, 59, 0.14); color: var(--terracotta-deep); }
+
+  /* ==== Buttons ==== */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 11px 18px; border-radius: 10px;
+    border: 1px solid transparent;
+    font-family: inherit; font-size: 14px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s ease;
+    background: var(--cream-deep); color: var(--brown-soft);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .btn:hover { background: var(--border); }
+  .btn-primary {
+    background: var(--terracotta); color: var(--surface);
+    box-shadow: 0 2px 4px rgba(196, 98, 59, 0.25);
+  }
+  .btn-primary:hover { background: var(--terracotta-deep); }
+  .btn-ghost { background: transparent; color: var(--muted); padding: 8px 12px; }
+  .btn-ghost:hover { background: var(--cream-deep); color: var(--brown-soft); }
+  .btn-sm { padding: 7px 12px; font-size: 13px; }
+  .btn-block { width: 100%; }
+  .btn-danger-ghost { background: transparent; color: var(--rose); }
+  .btn-danger-ghost:hover { background: var(--rose-soft); }
+
+  /* ==== Inputs ==== */
+  .field { margin-bottom: 14px; }
+  .field-label {
+    display: block; font-size: 12px; font-weight: 600;
+    color: var(--brown-soft); margin-bottom: 6px;
+    letter-spacing: 0.02em; text-transform: uppercase;
+  }
+  .input, .select, .textarea {
+    width: 100%; padding: 11px 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    font-family: inherit; font-size: 15px; color: var(--brown);
+    transition: all 0.15s ease;
+  }
+  .input:focus, .select:focus, .textarea:focus {
+    outline: none; border-color: var(--terracotta);
+    box-shadow: 0 0 0 3px rgba(196, 98, 59, 0.12);
+  }
+  .textarea { resize: vertical; min-height: 70px; font-family: inherit; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .field-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .input-suffix-wrap { position: relative; }
+  .input-suffix {
+    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    font-size: 13px; color: var(--muted); pointer-events: none; font-weight: 500;
+  }
+  .input-suffix-wrap .input { padding-right: 40px; }
+
+  /* ==== Starter status ==== */
+  .starter-hero {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;
+    margin-bottom: 18px; flex-wrap: wrap;
+  }
+  .starter-name {
+    font-family: 'Fraunces', serif; font-size: 26px; font-weight: 600;
+    color: var(--brown);
+  }
+  .starter-meta {
+    font-size: 13px; color: var(--muted); margin-top: 2px;
+  }
+  .starter-stat-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    margin-top: 18px;
+  }
+  .stat-tile {
+    background: var(--surface);
+    border: 1px solid var(--border-soft);
+    border-radius: 12px;
+    padding: 14px;
+  }
+  .stat-label {
+    font-size: 11px; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .stat-value {
+    font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600;
+    color: var(--brown); letter-spacing: -0.02em;
+  }
+  .stat-hint { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  /* ==== Rise progress bar ==== */
+  .rise-track {
+    height: 8px; background: var(--cream-deep);
+    border-radius: 999px; overflow: hidden;
+    margin-top: 14px; position: relative;
+  }
+  .rise-fill {
+    height: 100%; border-radius: 999px;
+    background: linear-gradient(90deg, var(--amber), var(--sage));
+    transition: width 1s ease;
+  }
+  .rise-marks {
+    display: flex; justify-content: space-between;
+    font-size: 11px; color: var(--muted);
+    margin-top: 6px; font-weight: 500;
+  }
+
+  /* ==== Feeding row ==== */
+  .feeding-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .feeding-row:last-child { border-bottom: none; }
+  .feeding-when {
+    font-size: 14px; font-weight: 500; color: var(--brown);
+  }
+  .feeding-detail { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .feeding-ratio {
+    font-family: 'Fraunces', serif; font-size: 16px; font-weight: 600;
+    color: var(--terracotta);
+  }
+
+  /* ==== Recipe cards ==== */
+  .recipe-grid { display: grid; gap: 12px; }
+  .recipe-card {
+    background: var(--surface);
+    border: 1px solid var(--border-soft);
+    border-radius: 14px;
+    padding: 16px 18px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  }
+  .recipe-card:hover {
+    border-color: var(--terracotta);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+  }
+  .recipe-card-title {
+    font-family: 'Fraunces', serif; font-size: 17px; font-weight: 600;
+    color: var(--brown);
+  }
+  .recipe-card-meta {
+    font-size: 12px; color: var(--muted); margin-top: 3px;
+    display: flex; gap: 12px; flex-wrap: wrap;
+  }
+  .recipe-card-meta span {
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+
+  /* ==== Empty state ==== */
+  .empty {
+    text-align: center; padding: 40px 20px;
+    color: var(--muted);
+  }
+  .empty-mark {
+    width: 56px; height: 56px; margin: 0 auto 14px;
+    border-radius: 16px; background: var(--cream-deep);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--terracotta);
+  }
+  .empty-title {
+    font-family: 'Fraunces', serif; font-size: 18px; font-weight: 600;
+    color: var(--brown); margin-bottom: 6px;
+  }
+  .empty-text { font-size: 14px; max-width: 280px; margin: 0 auto 18px; }
+
+  /* ==== Modal ==== */
+  .modal-backdrop {
+    position: fixed; inset: 0; background: rgba(61, 40, 23, 0.4);
+    backdrop-filter: blur(4px);
+    z-index: 100; display: flex; align-items: flex-end; justify-content: center;
+    padding: 20px;
+    animation: fadeIn 0.18s ease;
+  }
+  @media (min-width: 600px) {
+    .modal-backdrop { align-items: center; }
+  }
+  .modal {
+    background: var(--surface);
+    border-radius: 18px 18px 0 0;
+    width: 100%; max-width: 520px;
+    max-height: 88vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+    animation: slideUp 0.22s ease;
+  }
+  @media (min-width: 600px) {
+    .modal { border-radius: 18px; }
+  }
+  .modal-header {
+    padding: 20px 20px 12px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; background: var(--surface);
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .modal-body { padding: 18px 20px; }
+  .modal-footer {
+    padding: 14px 20px 20px;
+    display: flex; gap: 10px; justify-content: flex-end;
+    border-top: 1px solid var(--border-soft);
+    background: var(--surface);
+    position: sticky; bottom: 0;
+  }
+  .icon-btn {
+    width: 32px; height: 32px; border-radius: 8px;
+    border: none; background: var(--cream-deep);
+    color: var(--brown-soft); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s ease;
+  }
+  .icon-btn:hover { background: var(--border); color: var(--brown); }
+
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+  /* ==== Bake timeline ==== */
+  .phase-active {
+    background: linear-gradient(135deg, rgba(196, 98, 59, 0.06), rgba(196, 98, 59, 0.02));
+    border: 1.5px solid var(--terracotta);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .phase-name {
+    font-family: 'Fraunces', serif; font-size: 22px; font-weight: 600;
+    color: var(--brown); margin-bottom: 4px;
+  }
+  .phase-instr { font-size: 14px; color: var(--brown-soft); margin-bottom: 14px; }
+  .timer-display {
+    font-family: 'Fraunces', serif;
+    font-variant-numeric: tabular-nums;
+    font-size: 44px; font-weight: 500;
+    color: var(--terracotta); letter-spacing: -0.03em;
+    margin: 8px 0;
+  }
+  .timer-target {
+    font-size: 12px; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600;
+  }
+  .phase-list { margin-top: 18px; }
+  .phase-item {
+    display: flex; gap: 14px; align-items: flex-start;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .phase-item:last-child { border-bottom: none; }
+  .phase-dot {
+    width: 20px; height: 20px; border-radius: 50%;
+    border: 2px solid var(--border);
+    background: var(--surface);
+    flex-shrink: 0; margin-top: 2px;
+    position: relative;
+  }
+  .phase-item.done .phase-dot {
+    background: var(--sage); border-color: var(--sage);
+  }
+  .phase-item.done .phase-dot::after {
+    content: '✓'; position: absolute; inset: 0; color: white;
+    font-size: 11px; display: flex; align-items: center; justify-content: center;
+    line-height: 1;
+  }
+  .phase-item.current .phase-dot {
+    border-color: var(--terracotta); background: var(--terracotta);
+    box-shadow: 0 0 0 4px rgba(196, 98, 59, 0.18);
+  }
+  .phase-item-name {
+    font-weight: 600; font-size: 14px; color: var(--brown);
+  }
+  .phase-item.done .phase-item-name { color: var(--muted); text-decoration: line-through; }
+  .phase-item-time { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  /* ==== Notification banner ==== */
+  .notif-banner {
+    background: linear-gradient(135deg, var(--amber-soft), #FAEACC);
+    border: 1px solid #E8C796;
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px; color: #6B4519;
+  }
+  .notif-banner .btn { margin-left: auto; }
+
+  /* ==== Misc ==== */
+  .row-between { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .stack > * + * { margin-top: 12px; }
+  .text-muted { color: var(--muted); }
+  .text-sm { font-size: 13px; }
+  .text-xs { font-size: 12px; }
+  .mt-2 { margin-top: 8px; }
+  .mt-4 { margin-top: 16px; }
+  .mb-2 { margin-bottom: 8px; }
+  .gap-2 { gap: 8px; }
+  .flex { display: flex; }
+  .hidden { display: none; }
+
+  /* Flour chips */
+  .chip-row {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    margin-bottom: 8px;
+  }
+  .chip {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--brown-soft);
+    padding: 6px 12px; border-radius: 999px;
+    font-size: 13px; font-weight: 500;
+    cursor: pointer; font-family: inherit;
+    transition: all 0.15s ease;
+  }
+  .chip:hover { border-color: var(--terracotta); color: var(--terracotta); }
+  .chip.active {
+    background: var(--terracotta); color: white;
+    border-color: var(--terracotta);
+  }
+
+  /* Fold marker */
+  .fold-pill {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: var(--cream-deep); color: var(--brown-soft);
+    padding: 3px 8px; border-radius: 6px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.02em;
+    margin-right: 6px; margin-top: 4px;
+  }
+  .fold-pill.done { background: var(--sage-soft); color: #4A6B33; }
+  .fold-pill.due { background: var(--terracotta); color: white; }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: calc(20px + env(safe-area-inset-bottom));
+    left: 50%; transform: translateX(-50%);
+    background: var(--brown); color: var(--cream);
+    padding: 12px 20px; border-radius: 12px;
+    font-size: 14px; font-weight: 500;
+    box-shadow: var(--shadow-lg);
+    z-index: 200;
+    animation: toastIn 0.22s ease;
+  }
+  @keyframes toastIn { from { transform: translate(-50%, 20px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script crossorigin src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+
+<script>
+(function() {
+const React = window.React;
+const ReactDOM = window.ReactDOM;
+const { useState, useEffect, useReducer, useMemo, useCallback, useRef } = React;
+const createRoot = ReactDOM.createRoot;
+
+const h = React.createElement;
+
+// ============================================================
+//  Storage helpers
+// ============================================================
+const STORAGE_KEY = 'crumb.state.v1';
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch (e) { return null; }
+}
+
+function saveState(state) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch (e) { /* ignore quota */ }
+}
+
+const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
+
+const FLOUR_PRESETS = [
+  'Bread flour',
+  'All-purpose',
+  'Whole wheat',
+  'Rye',
+  'Dark rye',
+  'Spelt',
+  'Einkorn',
+  '50/50 wheat & rye',
+];
+
+// ============================================================
+//  Default state
+// ============================================================
+const defaultState = {
+  starter: {
+    name: 'My Starter',
+    ambientTempC: 22,
+    defaultRatio: { starter: 1, flour: 1, water: 1 },
+    defaultFlour: 'Bread flour',
+    feedings: [], // { id, ts, ratio: {starter,flour,water}, tempC, flour, notes }
+  },
+  recipes: [
+    {
+      id: 'sample-country',
+      name: 'Country Loaf',
+      flourTotal: 500,
+      water: 360,
+      salt: 10,
+      levain: 100,
+      notes: 'Classic 72% hydration country loaf. Bake at 250°C with steam for 20 min, then 220°C for 25 min.',
+      bulkHours: 4.5,
+      foldCount: 4,
+      foldIntervalMin: 45,
+      retardHours: 12,
+      bakeMin: 45,
+    },
+  ],
+  activeBake: null, // { id, recipeId, startedAt, currentPhase, phaseStartedAt, completedPhases:[], folds:[{ts,done}] }
+  notificationsEnabled: false,
+  ui: { tab: 'today' },
+};
+
+// ============================================================
+//  Reducer
+// ============================================================
+function reducer(state, action) {
+  switch (action.type) {
+    case 'SET_TAB':
+      return { ...state, ui: { ...state.ui, tab: action.tab } };
+
+    case 'UPDATE_STARTER':
+      return { ...state, starter: { ...state.starter, ...action.patch } };
+
+    case 'ADD_FEEDING':
+      return {
+        ...state,
+        starter: {
+          ...state.starter,
+          feedings: [action.feeding, ...state.starter.feedings].slice(0, 100),
+        },
+      };
+
+    case 'DELETE_FEEDING':
+      return {
+        ...state,
+        starter: {
+          ...state.starter,
+          feedings: state.starter.feedings.filter(f => f.id !== action.id),
+        },
+      };
+
+    case 'ADD_RECIPE':
+      return { ...state, recipes: [...state.recipes, action.recipe] };
+
+    case 'UPDATE_RECIPE':
+      return {
+        ...state,
+        recipes: state.recipes.map(r => r.id === action.recipe.id ? action.recipe : r),
+      };
+
+    case 'DELETE_RECIPE':
+      return { ...state, recipes: state.recipes.filter(r => r.id !== action.id) };
+
+    case 'START_BAKE':
+      return {
+        ...state,
+        activeBake: action.bake,
+        ui: { ...state.ui, tab: 'bake' },
+      };
+
+    case 'ADVANCE_PHASE':
+      return { ...state, activeBake: action.bake };
+
+    case 'UPDATE_BAKE':
+      return { ...state, activeBake: action.bake };
+
+    case 'CANCEL_BAKE':
+      return { ...state, activeBake: null };
+
+    case 'SET_NOTIFICATIONS':
+      return { ...state, notificationsEnabled: action.enabled };
+
+    case 'HYDRATE':
+      return { ...defaultState, ...action.state, ui: { ...defaultState.ui, ...(action.state?.ui || {}) } };
+
+    default: return state;
+  }
+}
+
+// ============================================================
+//  Starter peak prediction
+//  Q10-style model: rises faster in warmth, slower at colder temps
+// ============================================================
+function predictPeakHours(ratio, tempC) {
+  // baseline: 1:1:1 at 24°C peaks ~5h
+  const baseHours = 5;
+  const flourPart = ratio.flour / Math.max(ratio.starter, 0.1);
+  const ratioFactor = Math.pow(flourPart, 0.35); // 1:1:1 -> 1, 1:5:5 -> ~1.78
+  // Q10 ≈ 2 per 10°C
+  const tempFactor = Math.pow(2, (24 - tempC) / 10);
+  const hours = baseHours * ratioFactor * tempFactor;
+  return Math.max(1.5, Math.min(24, hours));
+}
+
+function starterStatus(feedings, ambientTempC) {
+  if (!feedings.length) {
+    return { state: 'unknown', label: 'No feedings yet', color: 'brown', progress: 0 };
+  }
+  const last = feedings[0];
+  const peakH = predictPeakHours(last.ratio, last.tempC ?? ambientTempC);
+  const elapsedH = (Date.now() - last.ts) / 3_600_000;
+  const peakStart = peakH * 0.85;
+  const peakEnd = peakH * 1.2;
+  const progress = Math.min(1, elapsedH / peakH);
+
+  if (elapsedH < 0.75) return { state: 'fed', label: 'Just fed', color: 'brown', progress, peakH, elapsedH };
+  if (elapsedH < peakStart) return { state: 'rising', label: 'Rising', color: 'amber', progress, peakH, elapsedH };
+  if (elapsedH <= peakEnd) return { state: 'peak', label: 'At peak — use now', color: 'sage', progress: 1, peakH, elapsedH };
+  if (elapsedH > 12) return { state: 'hungry', label: 'Hungry — feed soon', color: 'rose', progress: 1, peakH, elapsedH };
+  return { state: 'past', label: 'Past peak', color: 'brown', progress: 1, peakH, elapsedH };
+}
+
+// ============================================================
+//  Time helpers
+// ============================================================
+function fmtTime(ts) {
+  const d = new Date(ts);
+  return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+function fmtDateTime(ts) {
+  const d = new Date(ts);
+  const today = new Date(); today.setHours(0,0,0,0);
+  const yest = new Date(today); yest.setDate(yest.getDate() - 1);
+  const day = d >= today ? 'Today' :
+              d >= yest ? 'Yesterday' :
+              d.toLocaleDateString([], { month: 'short', day: 'numeric' });
+  return `${day}, ${fmtTime(ts)}`;
+}
+function fmtDuration(ms) {
+  if (ms < 0) ms = 0;
+  const totalSec = Math.floor(ms / 1000);
+  const h = Math.floor(totalSec / 3600);
+  const m = Math.floor((totalSec % 3600) / 60);
+  const s = totalSec % 60;
+  if (h > 0) return `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  return `${m}:${String(s).padStart(2,'0')}`;
+}
+function fmtHoursPretty(h) {
+  if (h < 1) return `${Math.round(h * 60)} min`;
+  const whole = Math.floor(h);
+  const mins = Math.round((h - whole) * 60);
+  if (mins === 0) return `${whole}h`;
+  return `${whole}h ${mins}m`;
+}
+function fmtRelative(ts) {
+  const diff = Date.now() - ts;
+  const min = Math.floor(diff / 60000);
+  if (min < 1) return 'just now';
+  if (min < 60) return `${min} min ago`;
+  const hr = Math.floor(min / 60);
+  if (hr < 24) return `${hr}h ago`;
+  const d = Math.floor(hr / 24);
+  return `${d}d ago`;
+}
+
+// ============================================================
+//  Notification helpers
+// ============================================================
+async function requestNotificationPermission() {
+  if (!('Notification' in window)) return false;
+  if (Notification.permission === 'granted') return true;
+  if (Notification.permission === 'denied') return false;
+  const result = await Notification.requestPermission();
+  return result === 'granted';
+}
+
+function showNotification(title, body) {
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  try {
+    new Notification(title, { body, icon: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23C4623B'/></svg>" });
+  } catch (e) { /* ignore */ }
+}
+
+// ============================================================
+//  Icons (inline SVG)
+// ============================================================
+const Icon = ({ name, size = 18 }) => {
+  const paths = {
+    wheat: h('g', { fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' },
+      h('path', { d: 'M12 3v18' }),
+      h('path', { d: 'M12 7c-3 0-5 1-6 4 3 0 5-1 6-3 1 2 3 3 6 3-1-3-3-4-6-4z' }),
+      h('path', { d: 'M12 12c-3 0-5 1-6 4 3 0 5-1 6-3 1 2 3 3 6 3-1-3-3-4-6-4z' }),
+      h('path', { d: 'M12 17c-3 0-5 1-6 4 3 0 5-1 6-3 1 2 3 3 6 3-1-3-3-4-6-4z' }),
+    ),
+    plus: h('g', { fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round' },
+      h('path', { d: 'M12 5v14M5 12h14' })),
+    close: h('g', { fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round' },
+      h('path', { d: 'M6 6l12 12M18 6L6 18' })),
+    trash: h('g', { fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' },
+      h('path', { d: 'M4 7h16M10 11v6M14 11v6M6 7l1 13a2 2 0 002 2h6a2 2 0 002-2l1-13M9 7V4a1 1 0 011-1h4a1 1 0 011 1v3' })),
+    edit: h('g', { fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' },
+      h('path', { d: 'M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z' })),
+    bell: h('g', { fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' },
+      h('path', { d: 'M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 01-3.4 0' })),
+    bake: h('g', { fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' },
+      h('path', { d: 'M4 12c0-5 4-8 8-8s8 3 8 8M3 14h18M4 14v6h16v-6M8 18h.01M12 18h.01M16 18h.01' })),
+    clock: h('g', { fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' },
+      h('circle', { cx: 12, cy: 12, r: 9 }),
+      h('path', { d: 'M12 7v5l3 2' })),
+    book: h('g', { fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' },
+      h('path', { d: 'M4 19.5A2.5 2.5 0 016.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z' })),
+    sun: h('g', { fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' },
+      h('circle', { cx: 12, cy: 12, r: 4 }),
+      h('path', { d: 'M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41' })),
+    check: h('g', { fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' },
+      h('path', { d: 'M20 6L9 17l-5-5' })),
+    arrow: h('g', { fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' },
+      h('path', { d: 'M5 12h14M13 5l7 7-7 7' })),
+  };
+  return h('svg', { width: size, height: size, viewBox: '0 0 24 24', style: { display: 'block' } }, paths[name]);
+};
+
+// ============================================================
+//  Components
+// ============================================================
+function Header({ tab, setTab }) {
+  return h('header', { className: 'app-header' },
+    h('div', { className: 'app-header-inner' },
+      h('div', { className: 'brand' },
+        h('div', { className: 'brand-mark' }, h(Icon, { name: 'wheat', size: 22 })),
+        h('div', null,
+          h('div', { className: 'brand-name' }, 'Crumb'),
+          h('div', { className: 'brand-tag' }, 'one rise at a time'),
+        ),
+      ),
+      h('nav', { className: 'tabs' },
+        ['today', 'starter', 'recipes', 'bake'].map(t =>
+          h('button', {
+            key: t,
+            className: 'tab' + (tab === t ? ' active' : ''),
+            onClick: () => setTab(t),
+          }, t.charAt(0).toUpperCase() + t.slice(1))
+        ),
+      ),
+    ),
+  );
+}
+
+function NotifBanner({ enabled, onEnable }) {
+  if (enabled) return null;
+  if (!('Notification' in window)) return null;
+  if (Notification.permission === 'denied') return null;
+  return h('div', { className: 'notif-banner' },
+    h(Icon, { name: 'bell', size: 18 }),
+    h('span', null, 'Get reminded for feedings, folds and bake-off times.'),
+    h('button', { className: 'btn btn-sm', onClick: onEnable }, 'Enable'),
+  );
+}
+
+// -------------------- Today tab --------------------
+function TodayTab({ state, dispatch, setTab }) {
+  const status = useMemo(() => starterStatus(state.starter.feedings, state.starter.ambientTempC), [state.starter.feedings, state.starter.ambientTempC, Date.now()]);
+  const last = state.starter.feedings[0];
+  const nextFeedingTs = last ? last.ts + (status.peakH || 5) * 3600000 * 1.1 : null;
+  const recipeCount = state.recipes.length;
+
+  return h('div', null,
+    h('h1', null, greeting()),
+    h('p', { className: 'subtitle' }, 'Here\'s what\'s happening in your kitchen.'),
+
+    // Starter snapshot
+    h('div', { className: 'card-hero' },
+      h('div', { className: 'starter-hero' },
+        h('div', null,
+          h('div', { className: 'text-xs text-muted', style: { textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 600 } }, 'Starter'),
+          h('div', { className: 'starter-name' }, state.starter.name),
+        ),
+        h('span', { className: `badge ${status.color}` }, status.label),
+      ),
+      last
+        ? h(React.Fragment, null,
+            h('div', { className: 'rise-track' },
+              h('div', { className: 'rise-fill', style: { width: `${Math.round(status.progress * 100)}%` } })
+            ),
+            h('div', { className: 'rise-marks' },
+              h('span', null, 'Fed ', fmtRelative(last.ts)),
+              h('span', null, status.peakH ? `Peak ≈ ${fmtHoursPretty(status.peakH)}` : ''),
+            ),
+            h('div', { className: 'starter-stat-grid' },
+              h('div', { className: 'stat-tile' },
+                h('div', { className: 'stat-label' }, 'Last fed'),
+                h('div', { className: 'stat-value' }, fmtTime(last.ts)),
+                h('div', { className: 'stat-hint' }, `${last.ratio.starter}:${last.ratio.flour}:${last.ratio.water} • ${last.flour || 'Bread flour'}`),
+              ),
+              h('div', { className: 'stat-tile' },
+                h('div', { className: 'stat-label' }, status.state === 'peak' ? 'Peak window' : 'Estimated peak'),
+                h('div', { className: 'stat-value' }, fmtTime(last.ts + status.peakH * 3600000)),
+                h('div', { className: 'stat-hint' }, `${fmtTime(last.ts + status.peakH * 3600000 * 0.85)} – ${fmtTime(last.ts + status.peakH * 3600000 * 1.2)}`),
+              ),
+            ),
+          )
+        : h('div', { className: 'text-sm text-muted', style: { padding: '8px 0' } }, 'Log your first feeding to start tracking.'),
+      h('div', { style: { marginTop: 16, display: 'flex', gap: 8 } },
+        h('button', { className: 'btn btn-primary', onClick: () => setTab('starter') },
+          h(Icon, { name: 'plus', size: 16 }), 'Log feeding',
+        ),
+      ),
+    ),
+
+    // Active bake
+    state.activeBake
+      ? h(ActiveBakeSummary, { state, dispatch, setTab })
+      : h('div', { className: 'card', style: { display: 'flex', alignItems: 'center', gap: 14 } },
+          h('div', { className: 'brand-mark', style: { background: 'var(--cream-deep)', color: 'var(--terracotta)' } }, h(Icon, { name: 'bake', size: 22 })),
+          h('div', { style: { flex: 1 } },
+            h('div', { style: { fontWeight: 600, color: 'var(--brown)' } }, 'No active bake'),
+            h('div', { className: 'text-sm text-muted' }, `You have ${recipeCount} recipe${recipeCount === 1 ? '' : 's'} saved.`),
+          ),
+          h('button', { className: 'btn btn-sm', onClick: () => setTab('bake') }, 'Start →'),
+        ),
+  );
+}
+
+function ActiveBakeSummary({ state, dispatch, setTab }) {
+  const bake = state.activeBake;
+  const recipe = state.recipes.find(r => r.id === bake.recipeId);
+  if (!recipe) return null;
+  const phase = bakePhases(recipe)[bake.currentPhase];
+  const elapsed = Date.now() - bake.phaseStartedAt;
+  const remaining = phase.duration - elapsed;
+
+  return h('div', { className: 'card-hero', style: { borderColor: 'var(--terracotta)' } },
+    h('div', { className: 'row-between', style: { marginBottom: 12 } },
+      h('div', null,
+        h('div', { className: 'text-xs text-muted', style: { textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 600 } }, 'Active bake'),
+        h('div', { className: 'starter-name', style: { fontSize: 22 } }, recipe.name),
+      ),
+      h('span', { className: 'badge terracotta' }, `Phase ${bake.currentPhase + 1} / ${bakePhases(recipe).length}`),
+    ),
+    h('div', { style: { fontFamily: 'Fraunces, serif', fontWeight: 600, fontSize: 18 } }, phase.name),
+    h('div', { className: 'timer-display', style: { fontSize: 32 } }, fmtDuration(remaining)),
+    h('button', { className: 'btn btn-primary btn-block', onClick: () => setTab('bake') }, 'Open timeline'),
+  );
+}
+
+function greeting() {
+  const h = new Date().getHours();
+  if (h < 5) return 'Late night bake?';
+  if (h < 12) return 'Good morning';
+  if (h < 17) return 'Good afternoon';
+  if (h < 21) return 'Good evening';
+  return 'Quiet hours';
+}
+
+// -------------------- Starter tab --------------------
+function StarterTab({ state, dispatch, toast }) {
+  const [showFeed, setShowFeed] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const status = useMemo(() => starterStatus(state.starter.feedings, state.starter.ambientTempC), [state.starter.feedings, state.starter.ambientTempC]);
+
+  return h('div', null,
+    h('div', { className: 'row-between', style: { marginBottom: 4 } },
+      h('h1', null, state.starter.name),
+      h('button', { className: 'btn-ghost btn btn-sm', onClick: () => setShowSettings(true) },
+        h(Icon, { name: 'edit', size: 14 }), 'Settings'
+      ),
+    ),
+    h('p', { className: 'subtitle' }, `Ambient ${state.starter.ambientTempC}°C • ${state.starter.feedings.length} feedings logged`),
+
+    // Status card
+    h('div', { className: 'card-hero' },
+      h('div', { className: 'row-between', style: { marginBottom: 12 } },
+        h('span', { className: `badge ${status.color}`, style: { fontSize: 13, padding: '6px 14px' } }, status.label),
+        status.peakH && h('span', { className: 'text-xs text-muted' }, `Cycle ≈ ${fmtHoursPretty(status.peakH)}`),
+      ),
+      state.starter.feedings.length > 0 && h(React.Fragment, null,
+        h('div', { className: 'rise-track' },
+          h('div', { className: 'rise-fill', style: { width: `${Math.round(status.progress * 100)}%` } }),
+        ),
+        h('div', { className: 'rise-marks' },
+          h('span', null, 'Fed'),
+          h('span', null, 'Rising'),
+          h('span', null, 'Peak'),
+        ),
+      ),
+      h('button', { className: 'btn btn-primary btn-block', style: { marginTop: 18 }, onClick: () => setShowFeed(true) },
+        h(Icon, { name: 'plus', size: 16 }), 'Log feeding',
+      ),
+    ),
+
+    // History
+    h('div', { className: 'card' },
+      h('h3', { style: { marginBottom: 12 } }, 'Feeding history'),
+      state.starter.feedings.length === 0
+        ? h('div', { className: 'text-sm text-muted', style: { padding: '8px 0' } }, 'No feedings yet. Tap "Log feeding" to begin.')
+        : state.starter.feedings.map(f =>
+            h('div', { key: f.id, className: 'feeding-row' },
+              h('div', null,
+                h('div', { className: 'feeding-when' }, fmtDateTime(f.ts)),
+                h('div', { className: 'feeding-detail' },
+                  f.flour || 'Bread flour',
+                  ` • ${f.tempC}°C`,
+                  f.notes ? ` • ${f.notes}` : '',
+                ),
+              ),
+              h('div', { style: { display: 'flex', alignItems: 'center', gap: 8 } },
+                h('span', { className: 'feeding-ratio' }, `${f.ratio.starter}:${f.ratio.flour}:${f.ratio.water}`),
+                h('button', { className: 'icon-btn', style: { width: 28, height: 28 }, onClick: () => dispatch({ type: 'DELETE_FEEDING', id: f.id }), title: 'Delete' },
+                  h(Icon, { name: 'trash', size: 13 })
+                ),
+              ),
+            )
+          ),
+    ),
+
+    showFeed && h(FeedingModal, {
+      state,
+      onClose: () => setShowFeed(false),
+      onSave: (feeding) => {
+        dispatch({ type: 'ADD_FEEDING', feeding });
+        setShowFeed(false);
+        toast('Feeding logged');
+      },
+    }),
+
+    showSettings && h(StarterSettingsModal, {
+      state,
+      onClose: () => setShowSettings(false),
+      onSave: (patch) => {
+        dispatch({ type: 'UPDATE_STARTER', patch });
+        setShowSettings(false);
+        toast('Settings saved');
+      },
+    }),
+  );
+}
+
+function FeedingModal({ state, onClose, onSave }) {
+  const def = state.starter.defaultRatio;
+  const [ratio, setRatio] = useState({ ...def });
+  const [tempC, setTempC] = useState(state.starter.ambientTempC);
+  const [flour, setFlour] = useState(state.starter.defaultFlour || 'Bread flour');
+  const [customFlour, setCustomFlour] = useState('');
+  const [notes, setNotes] = useState('');
+  const [whenMode, setWhenMode] = useState('now');
+  const [customTime, setCustomTime] = useState(() => {
+    const d = new Date(); return d.toTimeString().slice(0,5);
+  });
+
+  const isCustom = !FLOUR_PRESETS.includes(flour) || flour === '__custom__';
+  const finalFlour = flour === '__custom__' ? customFlour.trim() : flour;
+
+  const submit = (e) => {
+    e.preventDefault();
+    let ts = Date.now();
+    if (whenMode === 'custom') {
+      const [hh, mm] = customTime.split(':').map(Number);
+      const d = new Date(); d.setHours(hh, mm, 0, 0);
+      if (d.getTime() > Date.now() + 60000) d.setDate(d.getDate() - 1); // future → yesterday
+      ts = d.getTime();
+    }
+    onSave({
+      id: uid(),
+      ts,
+      ratio: { ...ratio },
+      tempC: Number(tempC),
+      flour: finalFlour || 'Bread flour',
+      notes: notes.trim(),
+    });
+  };
+
+  return h(Modal, { title: 'Log feeding', onClose },
+    h('form', { onSubmit: submit },
+      h('div', { className: 'modal-body' },
+        h('div', { className: 'field' },
+          h('label', { className: 'field-label' }, 'Ratio (starter : flour : water)'),
+          h('div', { className: 'field-row-3' },
+            ['starter','flour','water'].map(k =>
+              h('input', {
+                key: k, type: 'number', step: '0.5', min: '0.5', max: '20',
+                className: 'input', value: ratio[k],
+                onChange: e => setRatio({ ...ratio, [k]: Number(e.target.value) }),
+              })
+            ),
+          ),
+          h('div', { className: 'text-xs text-muted mt-2' },
+            'Common: 1:1:1 (quick), 1:2:2 (balanced), 1:5:5 (overnight). ',
+            'Expected peak: ', h('strong', null, fmtHoursPretty(predictPeakHours(ratio, Number(tempC)))),
+          ),
+        ),
+        h('div', { className: 'field' },
+          h('label', { className: 'field-label' }, 'Flour used'),
+          h('div', { className: 'chip-row' },
+            FLOUR_PRESETS.map(f =>
+              h('button', {
+                key: f, type: 'button',
+                className: 'chip' + (flour === f ? ' active' : ''),
+                onClick: () => setFlour(f),
+              }, f)
+            ),
+            h('button', {
+              type: 'button',
+              className: 'chip' + (flour === '__custom__' ? ' active' : ''),
+              onClick: () => setFlour('__custom__'),
+            }, 'Other…'),
+          ),
+          flour === '__custom__' && h('input', {
+            type: 'text', className: 'input', value: customFlour,
+            onChange: e => setCustomFlour(e.target.value),
+            placeholder: 'e.g. 70% bread + 30% rye',
+            autoFocus: true,
+          }),
+        ),
+        h('div', { className: 'field' },
+          h('label', { className: 'field-label' }, 'Ambient temperature'),
+          h('div', { className: 'input-suffix-wrap' },
+            h('input', { type: 'number', step: '0.5', min: '5', max: '40', className: 'input', value: tempC, onChange: e => setTempC(e.target.value) }),
+            h('span', { className: 'input-suffix' }, '°C'),
+          ),
+        ),
+        h('div', { className: 'field' },
+          h('label', { className: 'field-label' }, 'When'),
+          h('div', { style: { display: 'flex', gap: 8, marginBottom: 8 } },
+            h('button', { type: 'button', className: 'btn btn-sm' + (whenMode === 'now' ? ' btn-primary' : ''), onClick: () => setWhenMode('now') }, 'Now'),
+            h('button', { type: 'button', className: 'btn btn-sm' + (whenMode === 'custom' ? ' btn-primary' : ''), onClick: () => setWhenMode('custom') }, 'Earlier today'),
+          ),
+          whenMode === 'custom' && h('input', { type: 'time', className: 'input', value: customTime, onChange: e => setCustomTime(e.target.value) }),
+        ),
+        h('div', { className: 'field' },
+          h('label', { className: 'field-label' }, 'Notes (optional)'),
+          h('textarea', { className: 'textarea', value: notes, onChange: e => setNotes(e.target.value), placeholder: 'Smelled tangy, doubled in 5h…' }),
+        ),
+      ),
+      h('div', { className: 'modal-footer' },
+        h('button', { type: 'button', className: 'btn', onClick: onClose }, 'Cancel'),
+        h('button', { type: 'submit', className: 'btn btn-primary' }, 'Save feeding'),
+      ),
+    ),
+  );
+}
+
+function StarterSettingsModal({ state, onClose, onSave }) {
+  const [name, setName] = useState(state.starter.name);
+  const [tempC, setTempC] = useState(state.starter.ambientTempC);
+  const [ratio, setRatio] = useState({ ...state.starter.defaultRatio });
+  const [defaultFlour, setDefaultFlour] = useState(state.starter.defaultFlour || 'Bread flour');
+  const [customFlour, setCustomFlour] = useState(
+    FLOUR_PRESETS.includes(state.starter.defaultFlour) ? '' : (state.starter.defaultFlour || '')
+  );
+  const flourValue = defaultFlour === '__custom__' ? customFlour.trim() : defaultFlour;
+
+  const submit = (e) => {
+    e.preventDefault();
+    onSave({
+      name: name.trim() || 'My Starter',
+      ambientTempC: Number(tempC),
+      defaultRatio: ratio,
+      defaultFlour: flourValue || 'Bread flour',
+    });
+  };
+
+  return h(Modal, { title: 'Starter settings', onClose },
+    h('form', { onSubmit: submit },
+      h('div', { className: 'modal-body' },
+        h('div', { className: 'field' },
+          h('label', { className: 'field-label' }, 'Starter name'),
+          h('input', { className: 'input', value: name, onChange: e => setName(e.target.value), placeholder: 'e.g. Doughy McDoughface' }),
+        ),
+        h('div', { className: 'field' },
+          h('label', { className: 'field-label' }, 'Default ambient temperature'),
+          h('div', { className: 'input-suffix-wrap' },
+            h('input', { type: 'number', step: '0.5', min: '5', max: '40', className: 'input', value: tempC, onChange: e => setTempC(e.target.value) }),
+            h('span', { className: 'input-suffix' }, '°C'),
+          ),
+        ),
+        h('div', { className: 'field' },
+          h('label', { className: 'field-label' }, 'Default feeding ratio'),
+          h('div', { className: 'field-row-3' },
+            ['starter','flour','water'].map(k =>
+              h('input', {
+                key: k, type: 'number', step: '0.5', min: '0.5', max: '20',
+                className: 'input', value: ratio[k],
+                onChange: e => setRatio({ ...ratio, [k]: Number(e.target.value) }),
+              })
+            ),
+          ),
+        ),
+        h('div', { className: 'field' },
+          h('label', { className: 'field-label' }, 'Default flour'),
+          h('div', { className: 'chip-row' },
+            FLOUR_PRESETS.map(f =>
+              h('button', {
+                key: f, type: 'button',
+                className: 'chip' + (defaultFlour === f ? ' active' : ''),
+                onClick: () => setDefaultFlour(f),
+              }, f)
+            ),
+            h('button', {
+              type: 'button',
+              className: 'chip' + (defaultFlour === '__custom__' ? ' active' : ''),
+              onClick: () => setDefaultFlour('__custom__'),
+            }, 'Other…'),
+          ),
+          defaultFlour === '__custom__' && h('input', {
+            type: 'text', className: 'input', value: customFlour,
+            onChange: e => setCustomFlour(e.target.value),
+            placeholder: 'e.g. 70% bread + 30% rye',
+          }),
+        ),
+      ),
+      h('div', { className: 'modal-footer' },
+        h('button', { type: 'button', className: 'btn', onClick: onClose }, 'Cancel'),
+        h('button', { type: 'submit', className: 'btn btn-primary' }, 'Save'),
+      ),
+    ),
+  );
+}
+
+// -------------------- Recipes tab --------------------
+function RecipesTab({ state, dispatch, toast, setTab }) {
+  const [editing, setEditing] = useState(null); // recipe or 'new'
+
+  return h('div', null,
+    h('div', { className: 'row-between' },
+      h('div', null,
+        h('h1', null, 'Recipes'),
+        h('p', { className: 'subtitle' }, `${state.recipes.length} saved`),
+      ),
+      h('button', { className: 'btn btn-primary', onClick: () => setEditing('new') },
+        h(Icon, { name: 'plus', size: 16 }), 'New recipe',
+      ),
+    ),
+
+    state.recipes.length === 0
+      ? h('div', { className: 'card' },
+          h('div', { className: 'empty' },
+            h('div', { className: 'empty-mark' }, h(Icon, { name: 'book', size: 24 })),
+            h('div', { className: 'empty-title' }, 'No recipes yet'),
+            h('div', { className: 'empty-text' }, 'Save your favourite formulas and start a bake from any of them.'),
+            h('button', { className: 'btn btn-primary', onClick: () => setEditing('new') }, 'Create first recipe'),
+          )
+        )
+      : h('div', { className: 'recipe-grid' },
+          state.recipes.map(r => {
+            const hydration = Math.round((r.water / r.flourTotal) * 100);
+            const salt = ((r.salt / r.flourTotal) * 100).toFixed(1);
+            const levain = Math.round((r.levain / r.flourTotal) * 100);
+            const totalWeight = r.flourTotal + r.water + r.salt + r.levain;
+            return h('div', { key: r.id, className: 'recipe-card', onClick: () => setEditing(r) },
+              h('div', { style: { flex: 1 } },
+                h('div', { className: 'recipe-card-title' }, r.name),
+                h('div', { className: 'recipe-card-meta' },
+                  h('span', null, `${hydration}% hydration`),
+                  h('span', null, `${levain}% levain`),
+                  h('span', null, `${salt}% salt`),
+                  h('span', null, `${totalWeight}g total`),
+                ),
+              ),
+              h('button', {
+                className: 'btn btn-sm btn-primary',
+                onClick: (e) => {
+                  e.stopPropagation();
+                  const bake = newBake(r);
+                  dispatch({ type: 'START_BAKE', bake });
+                  toast(`Started "${r.name}"`);
+                },
+              }, 'Bake', h(Icon, { name: 'arrow', size: 14 })),
+            );
+          })
+        ),
+
+    editing && h(RecipeModal, {
+      recipe: editing === 'new' ? null : editing,
+      onClose: () => setEditing(null),
+      onSave: (recipe) => {
+        if (editing === 'new') dispatch({ type: 'ADD_RECIPE', recipe });
+        else dispatch({ type: 'UPDATE_RECIPE', recipe });
+        setEditing(null);
+        toast(editing === 'new' ? 'Recipe added' : 'Recipe saved');
+      },
+      onDelete: editing !== 'new' ? () => {
+        dispatch({ type: 'DELETE_RECIPE', id: editing.id });
+        setEditing(null);
+        toast('Recipe deleted');
+      } : null,
+    }),
+  );
+}
+
+function RecipeModal({ recipe, onClose, onSave, onDelete }) {
+  const [r, setR] = useState(recipe || {
+    id: uid(),
+    name: '',
+    flourTotal: 500, water: 360, salt: 10, levain: 100,
+    notes: '',
+    bulkHours: 4.5, foldCount: 4, foldIntervalMin: 45,
+    retardHours: 12, bakeMin: 45,
+  });
+
+  const hydration = r.flourTotal ? ((r.water / r.flourTotal) * 100).toFixed(0) : 0;
+  const saltPct = r.flourTotal ? ((r.salt / r.flourTotal) * 100).toFixed(1) : 0;
+  const levainPct = r.flourTotal ? ((r.levain / r.flourTotal) * 100).toFixed(0) : 0;
+  const total = (r.flourTotal || 0) + (r.water || 0) + (r.salt || 0) + (r.levain || 0);
+
+  const set = (k, v) => setR({ ...r, [k]: v });
+
+  const submit = (e) => {
+    e.preventDefault();
+    if (!r.name.trim()) return;
+    onSave({ ...r, name: r.name.trim() });
+  };
+
+  return h(Modal, { title: recipe ? 'Edit recipe' : 'New recipe', onClose },
+    h('form', { onSubmit: submit },
+      h('div', { className: 'modal-body' },
+        h('div', { className: 'field' },
+          h('label', { className: 'field-label' }, 'Name'),
+          h('input', { className: 'input', value: r.name, onChange: e => set('name', e.target.value), placeholder: 'e.g. Saturday Sourdough', autoFocus: true, required: true }),
+        ),
+        h('div', { className: 'field-row' },
+          h('div', { className: 'field' },
+            h('label', { className: 'field-label' }, 'Flour'),
+            h('div', { className: 'input-suffix-wrap' },
+              h('input', { type: 'number', min: '0', className: 'input', value: r.flourTotal, onChange: e => set('flourTotal', Number(e.target.value)) }),
+              h('span', { className: 'input-suffix' }, 'g'),
+            ),
+          ),
+          h('div', { className: 'field' },
+            h('label', { className: 'field-label' }, `Water (${hydration}%)`),
+            h('div', { className: 'input-suffix-wrap' },
+              h('input', { type: 'number', min: '0', className: 'input', value: r.water, onChange: e => set('water', Number(e.target.value)) }),
+              h('span', { className: 'input-suffix' }, 'g'),
+            ),
+          ),
+        ),
+        h('div', { className: 'field-row' },
+          h('div', { className: 'field' },
+            h('label', { className: 'field-label' }, `Salt (${saltPct}%)`),
+            h('div', { className: 'input-suffix-wrap' },
+              h('input', { type: 'number', min: '0', step: '0.5', className: 'input', value: r.salt, onChange: e => set('salt', Number(e.target.value)) }),
+              h('span', { className: 'input-suffix' }, 'g'),
+            ),
+          ),
+          h('div', { className: 'field' },
+            h('label', { className: 'field-label' }, `Levain (${levainPct}%)`),
+            h('div', { className: 'input-suffix-wrap' },
+              h('input', { type: 'number', min: '0', className: 'input', value: r.levain, onChange: e => set('levain', Number(e.target.value)) }),
+              h('span', { className: 'input-suffix' }, 'g'),
+            ),
+          ),
+        ),
+        h('div', { className: 'text-xs text-muted', style: { marginTop: -4, marginBottom: 16 } },
+          `Total dough weight: ${total}g`),
+
+        h('h3', { style: { fontSize: 14, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--brown-soft)', fontFamily: 'Inter', fontWeight: 600, marginTop: 8, marginBottom: 10 } }, 'Timing'),
+        h('div', { className: 'field-row' },
+          h('div', { className: 'field' },
+            h('label', { className: 'field-label' }, 'Bulk ferment'),
+            h('div', { className: 'input-suffix-wrap' },
+              h('input', { type: 'number', step: '0.25', min: '0', className: 'input', value: r.bulkHours, onChange: e => set('bulkHours', Number(e.target.value)) }),
+              h('span', { className: 'input-suffix' }, 'h'),
+            ),
+          ),
+          h('div', { className: 'field' },
+            h('label', { className: 'field-label' }, 'Cold retard'),
+            h('div', { className: 'input-suffix-wrap' },
+              h('input', { type: 'number', step: '0.5', min: '0', className: 'input', value: r.retardHours, onChange: e => set('retardHours', Number(e.target.value)) }),
+              h('span', { className: 'input-suffix' }, 'h'),
+            ),
+          ),
+        ),
+        h('div', { className: 'field-row-3' },
+          h('div', { className: 'field' },
+            h('label', { className: 'field-label' }, 'Folds'),
+            h('input', { type: 'number', min: '0', max: '10', className: 'input', value: r.foldCount, onChange: e => set('foldCount', Number(e.target.value)) }),
+          ),
+          h('div', { className: 'field' },
+            h('label', { className: 'field-label' }, 'Fold interval'),
+            h('div', { className: 'input-suffix-wrap' },
+              h('input', { type: 'number', min: '0', className: 'input', value: r.foldIntervalMin, onChange: e => set('foldIntervalMin', Number(e.target.value)) }),
+              h('span', { className: 'input-suffix' }, 'min'),
+            ),
+          ),
+          h('div', { className: 'field' },
+            h('label', { className: 'field-label' }, 'Bake'),
+            h('div', { className: 'input-suffix-wrap' },
+              h('input', { type: 'number', min: '0', className: 'input', value: r.bakeMin, onChange: e => set('bakeMin', Number(e.target.value)) }),
+              h('span', { className: 'input-suffix' }, 'min'),
+            ),
+          ),
+        ),
+
+        h('div', { className: 'field' },
+          h('label', { className: 'field-label' }, 'Notes'),
+          h('textarea', { className: 'textarea', value: r.notes, onChange: e => set('notes', e.target.value), placeholder: 'Flour blend, baking temperature, scoring pattern…' }),
+        ),
+      ),
+      h('div', { className: 'modal-footer' },
+        onDelete && h('button', { type: 'button', className: 'btn btn-danger-ghost', onClick: () => {
+          if (confirm(`Delete "${r.name}"?`)) onDelete();
+        } }, h(Icon, { name: 'trash', size: 14 }), 'Delete'),
+        h('div', { style: { flex: 1 } }),
+        h('button', { type: 'button', className: 'btn', onClick: onClose }, 'Cancel'),
+        h('button', { type: 'submit', className: 'btn btn-primary' }, 'Save recipe'),
+      ),
+    ),
+  );
+}
+
+// -------------------- Bake tab --------------------
+function bakePhases(recipe) {
+  return [
+    { key: 'mix', name: 'Mix & autolyse', duration: 30 * 60000, instr: 'Combine flour, water, levain and salt. Let rest covered.' },
+    { key: 'bulk', name: 'Bulk ferment', duration: (recipe.bulkHours || 4.5) * 3600000, instr: `Ferment at room temperature with ${recipe.foldCount} stretch & folds every ${recipe.foldIntervalMin} min.`, folds: true },
+    { key: 'preshape', name: 'Pre-shape & bench rest', duration: 30 * 60000, instr: 'Turn out, pre-shape into a round, rest 20–30 min uncovered.' },
+    { key: 'shape', name: 'Final shape', duration: 10 * 60000, instr: 'Shape and place seam-up in a floured banneton.' },
+    { key: 'retard', name: 'Cold retard', duration: (recipe.retardHours || 12) * 3600000, instr: 'Cover and refrigerate. Develops flavour and structure.' },
+    { key: 'bake', name: 'Bake', duration: (recipe.bakeMin || 45) * 60000, instr: 'Score and bake. Steam for the first half, vent for crust.' },
+  ];
+}
+
+function newBake(recipe) {
+  const phases = bakePhases(recipe);
+  const startedAt = Date.now();
+  return {
+    id: uid(),
+    recipeId: recipe.id,
+    startedAt,
+    currentPhase: 0,
+    phaseStartedAt: startedAt,
+    completedPhases: [],
+    folds: buildFolds(recipe, startedAt + phases[0].duration), // bulk starts after phase 0
+  };
+}
+
+function buildFolds(recipe, bulkStart) {
+  const folds = [];
+  for (let i = 0; i < (recipe.foldCount || 0); i++) {
+    folds.push({
+      ts: bulkStart + (i + 1) * (recipe.foldIntervalMin || 45) * 60000,
+      done: false,
+      index: i + 1,
+    });
+  }
+  return folds;
+}
+
+function BakeTab({ state, dispatch, toast }) {
+  const [tick, setTick] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setTick(t => t + 1), 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  if (!state.activeBake) {
+    return h('div', null,
+      h('h1', null, 'Start a bake'),
+      h('p', { className: 'subtitle' }, 'Pick a recipe to begin the timeline.'),
+      state.recipes.length === 0
+        ? h('div', { className: 'card' },
+            h('div', { className: 'empty' },
+              h('div', { className: 'empty-mark' }, h(Icon, { name: 'bake', size: 24 })),
+              h('div', { className: 'empty-title' }, 'No recipes saved'),
+              h('div', { className: 'empty-text' }, 'Add a recipe first, then you can start a bake from it.'),
+            ),
+          )
+        : h('div', { className: 'recipe-grid' },
+            state.recipes.map(r =>
+              h('div', { key: r.id, className: 'recipe-card', onClick: () => {
+                dispatch({ type: 'START_BAKE', bake: newBake(r) });
+                toast(`Started "${r.name}"`);
+              } },
+                h('div', null,
+                  h('div', { className: 'recipe-card-title' }, r.name),
+                  h('div', { className: 'recipe-card-meta' },
+                    h('span', null, `Bulk ${fmtHoursPretty(r.bulkHours)}`),
+                    h('span', null, `Retard ${fmtHoursPretty(r.retardHours)}`),
+                    h('span', null, `Bake ${r.bakeMin} min`),
+                  ),
+                ),
+                h('span', { className: 'btn btn-sm btn-primary' }, 'Start', h(Icon, { name: 'arrow', size: 14 })),
+              ),
+            )
+          ),
+    );
+  }
+
+  const bake = state.activeBake;
+  const recipe = state.recipes.find(r => r.id === bake.recipeId);
+  if (!recipe) {
+    return h('div', { className: 'card' },
+      h('p', null, 'The recipe for this bake was deleted.'),
+      h('button', { className: 'btn btn-primary', onClick: () => dispatch({ type: 'CANCEL_BAKE' }) }, 'Cancel bake'),
+    );
+  }
+
+  const phases = bakePhases(recipe);
+  const phase = phases[bake.currentPhase];
+  const elapsed = Date.now() - bake.phaseStartedAt;
+  const remaining = phase.duration - elapsed;
+  const progress = Math.max(0, Math.min(1, elapsed / phase.duration));
+
+  const advance = () => {
+    if (bake.currentPhase >= phases.length - 1) {
+      // Finished
+      dispatch({ type: 'CANCEL_BAKE' });
+      toast('Bake complete — enjoy your loaf!');
+      return;
+    }
+    dispatch({
+      type: 'ADVANCE_PHASE',
+      bake: {
+        ...bake,
+        completedPhases: [...bake.completedPhases, bake.currentPhase],
+        currentPhase: bake.currentPhase + 1,
+        phaseStartedAt: Date.now(),
+      },
+    });
+  };
+
+  const toggleFold = (idx) => {
+    const folds = bake.folds.map(f => f.index === idx ? { ...f, done: !f.done } : f);
+    dispatch({ type: 'UPDATE_BAKE', bake: { ...bake, folds } });
+  };
+
+  return h('div', null,
+    h('div', { className: 'row-between' },
+      h('div', null,
+        h('h1', null, recipe.name),
+        h('p', { className: 'subtitle' }, `Started ${fmtTime(bake.startedAt)} • Phase ${bake.currentPhase + 1} / ${phases.length}`),
+      ),
+      h('button', { className: 'btn btn-danger-ghost btn-sm', onClick: () => {
+        if (confirm('Cancel this bake?')) {
+          dispatch({ type: 'CANCEL_BAKE' });
+          toast('Bake cancelled');
+        }
+      } }, 'Cancel'),
+    ),
+
+    // Current phase
+    h('div', { className: 'phase-active' },
+      h('div', { className: 'badge terracotta', style: { marginBottom: 10 } }, 'Now'),
+      h('div', { className: 'phase-name' }, phase.name),
+      h('div', { className: 'phase-instr' }, phase.instr),
+
+      h('div', { className: 'timer-display' }, fmtDuration(remaining)),
+      h('div', { className: 'timer-target' },
+        remaining > 0 ? `of ${fmtDuration(phase.duration)} • finishes ${fmtTime(bake.phaseStartedAt + phase.duration)}` : 'Time\'s up — ready to advance'
+      ),
+
+      h('div', { className: 'rise-track', style: { marginTop: 14, marginBottom: 4 } },
+        h('div', { className: 'rise-fill', style: { width: `${Math.round(progress * 100)}%`, background: remaining > 0 ? 'linear-gradient(90deg, var(--amber), var(--terracotta))' : 'var(--sage)' } }),
+      ),
+
+      // Folds during bulk
+      phase.folds && bake.folds.length > 0 && h('div', { style: { marginTop: 14 } },
+        h('div', { className: 'field-label', style: { marginBottom: 8 } }, 'Stretch & folds'),
+        h('div', null,
+          bake.folds.map(f => {
+            const due = !f.done && Date.now() >= f.ts - 60000;
+            const cls = 'fold-pill' + (f.done ? ' done' : due ? ' due' : '');
+            return h('button', {
+              key: f.index, className: cls,
+              style: { cursor: 'pointer', border: 'none', fontFamily: 'inherit' },
+              onClick: () => toggleFold(f.index),
+              title: 'Tap to toggle',
+            }, `#${f.index} ${fmtTime(f.ts)}`, f.done ? ' ✓' : '');
+          }),
+        ),
+      ),
+
+      h('button', { className: 'btn btn-primary btn-block', style: { marginTop: 18 }, onClick: advance },
+        bake.currentPhase >= phases.length - 1 ? 'Finish bake' : 'Advance to next phase',
+        h(Icon, { name: 'arrow', size: 16 }),
+      ),
+    ),
+
+    // Timeline
+    h('div', { className: 'card' },
+      h('h3', { style: { marginBottom: 4 } }, 'Timeline'),
+      h('div', { className: 'phase-list' },
+        phases.map((p, i) => {
+          const done = bake.completedPhases.includes(i);
+          const current = i === bake.currentPhase;
+          return h('div', { key: p.key, className: 'phase-item' + (done ? ' done' : '') + (current ? ' current' : '') },
+            h('div', { className: 'phase-dot' }),
+            h('div', null,
+              h('div', { className: 'phase-item-name' }, p.name),
+              h('div', { className: 'phase-item-time' }, fmtHoursPretty(p.duration / 3600000)),
+            ),
+          );
+        })
+      ),
+    ),
+  );
+}
+
+// -------------------- Modal wrapper --------------------
+function Modal({ title, onClose, children }) {
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    document.body.style.overflow = 'hidden';
+    return () => { window.removeEventListener('keydown', onKey); document.body.style.overflow = ''; };
+  }, [onClose]);
+
+  return h('div', { className: 'modal-backdrop', onClick: (e) => { if (e.target === e.currentTarget) onClose(); } },
+    h('div', { className: 'modal' },
+      h('div', { className: 'modal-header' },
+        h('h3', { style: { fontFamily: 'Fraunces, serif', fontSize: 20 } }, title),
+        h('button', { className: 'icon-btn', onClick: onClose, 'aria-label': 'Close' }, h(Icon, { name: 'close', size: 16 })),
+      ),
+      children,
+    ),
+  );
+}
+
+// ============================================================
+//  Notification scheduler
+// ============================================================
+function useNotificationScheduler(state) {
+  const fired = useRef(new Set());
+  useEffect(() => {
+    if (!state.notificationsEnabled) return;
+    const interval = setInterval(() => {
+      const now = Date.now();
+
+      // Active bake — phase finishing
+      if (state.activeBake) {
+        const recipe = state.recipes.find(r => r.id === state.activeBake.recipeId);
+        if (recipe) {
+          const phases = bakePhases(recipe);
+          const phase = phases[state.activeBake.currentPhase];
+          const finishesAt = state.activeBake.phaseStartedAt + phase.duration;
+          const key = `phase-${state.activeBake.id}-${state.activeBake.currentPhase}`;
+          if (now >= finishesAt && !fired.current.has(key)) {
+            fired.current.add(key);
+            showNotification('Crumb', `${phase.name} is done — time for the next step.`);
+          }
+          // Folds
+          state.activeBake.folds?.forEach(f => {
+            const fkey = `fold-${state.activeBake.id}-${f.index}`;
+            if (!f.done && now >= f.ts && !fired.current.has(fkey)) {
+              fired.current.add(fkey);
+              showNotification('Crumb', `Stretch & fold #${f.index} time.`);
+            }
+          });
+        }
+      }
+
+      // Starter peak window
+      const last = state.starter.feedings[0];
+      if (last) {
+        const peakH = predictPeakHours(last.ratio, last.tempC ?? state.starter.ambientTempC);
+        const peakTs = last.ts + peakH * 3600000;
+        const peakKey = `peak-${last.id}`;
+        if (now >= peakTs && now < peakTs + 60000 && !fired.current.has(peakKey)) {
+          fired.current.add(peakKey);
+          showNotification('Crumb', `${state.starter.name} should be at its peak — ready to use.`);
+        }
+        const hungryTs = last.ts + 14 * 3600000;
+        const hungryKey = `hungry-${last.id}`;
+        if (now >= hungryTs && now < hungryTs + 60000 && !fired.current.has(hungryKey)) {
+          fired.current.add(hungryKey);
+          showNotification('Crumb', `${state.starter.name} is getting hungry — feed it soon.`);
+        }
+      }
+    }, 30000); // check every 30s
+
+    return () => clearInterval(interval);
+  }, [state.notificationsEnabled, state.activeBake, state.starter.feedings, state.recipes, state.starter.name, state.starter.ambientTempC]);
+}
+
+// ============================================================
+//  App
+// ============================================================
+function App() {
+  const [state, dispatch] = useReducer(reducer, null, () => {
+    const loaded = loadState();
+    return loaded ? { ...defaultState, ...loaded, ui: { ...defaultState.ui, ...(loaded.ui || {}) } } : defaultState;
+  });
+  const [toastMsg, setToastMsg] = useState(null);
+  const toast = useCallback((msg) => {
+    setToastMsg(msg);
+    setTimeout(() => setToastMsg(null), 2200);
+  }, []);
+
+  // Persist on changes
+  useEffect(() => { saveState(state); }, [state]);
+
+  // Tick for live timers (Today + Starter use Date.now in memoization)
+  const [, setTick] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setTick(t => t + 1), 30000);
+    return () => clearInterval(id);
+  }, []);
+
+  useNotificationScheduler(state);
+
+  const setTab = (tab) => dispatch({ type: 'SET_TAB', tab });
+
+  const enableNotifs = async () => {
+    const ok = await requestNotificationPermission();
+    dispatch({ type: 'SET_NOTIFICATIONS', enabled: ok });
+    if (ok) {
+      toast('Notifications on');
+      showNotification('Crumb', 'You\'ll be reminded when it matters.');
+    } else {
+      toast('Notifications blocked');
+    }
+  };
+
+  const tab = state.ui.tab;
+
+  return h(React.Fragment, null,
+    h(Header, { tab, setTab }),
+    h('main', null,
+      h(NotifBanner, { enabled: state.notificationsEnabled, onEnable: enableNotifs }),
+      tab === 'today' && h(TodayTab, { state, dispatch, setTab }),
+      tab === 'starter' && h(StarterTab, { state, dispatch, toast }),
+      tab === 'recipes' && h(RecipesTab, { state, dispatch, toast, setTab }),
+      tab === 'bake' && h(BakeTab, { state, dispatch, toast }),
+    ),
+    toastMsg && h('div', { className: 'toast' }, toastMsg),
+  );
+}
+
+const root = createRoot(document.getElementById('root'));
+root.render(h(App));
+
+// Register a tiny inline service worker so the app is installable + works offline
+if ('serviceWorker' in navigator) {
+  const swCode = `
+    const CACHE = 'crumb-v1';
+    self.addEventListener('install', e => {
+      e.waitUntil(self.skipWaiting());
+    });
+    self.addEventListener('activate', e => {
+      e.waitUntil(self.clients.claim());
+    });
+    self.addEventListener('fetch', e => {
+      const req = e.request;
+      if (req.method !== 'GET') return;
+      e.respondWith(
+        caches.open(CACHE).then(async cache => {
+          const cached = await cache.match(req);
+          const fetchPromise = fetch(req).then(resp => {
+            if (resp.ok) cache.put(req, resp.clone());
+            return resp;
+          }).catch(() => cached);
+          return cached || fetchPromise;
+        })
+      );
+    });
+  `;
+  const blob = new Blob([swCode], { type: 'application/javascript' });
+  const url = URL.createObjectURL(blob);
+  navigator.serviceWorker.register(url).catch(() => {/* file:// will refuse — that's fine */});
+}
+})();
+</script>
+</body>
+</html>
