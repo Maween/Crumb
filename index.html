@@ -183,6 +183,7 @@
   .badge.rose { background: var(--rose-soft); color: #8A3329; }
   .badge.brown { background: var(--cream-deep); color: var(--brown-soft); }
   .badge.terracotta { background: rgba(196, 98, 59, 0.14); color: var(--terracotta-deep); }
+  .badge.ice { background: #D5E2F0; color: #3A5572; }
 
   /* ==== Buttons ==== */
   .btn {
@@ -704,6 +705,71 @@
     text-transform: uppercase;
     font-weight: 600;
   }
+  .switcher-card.idle {
+    background: linear-gradient(135deg, #EEF3F8, var(--surface));
+    border-color: #C9D7E5;
+  }
+  .switcher-card.idle.active {
+    background: linear-gradient(135deg, #DDE8F2, var(--surface));
+    border-color: #6B8AAF;
+    box-shadow: 0 2px 6px rgba(107, 138, 175, 0.2);
+  }
+  .switcher-card.idle .switcher-card-meta { color: #5A7794; }
+
+  .suggestion-card {
+    background: linear-gradient(135deg, var(--amber-soft), #FAEACC);
+    border: 1px solid #E8C796;
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin-bottom: 16px;
+    display: flex; gap: 14px;
+    align-items: flex-start;
+    position: relative;
+    overflow: hidden;
+  }
+  .suggestion-icon {
+    width: 36px; height: 36px;
+    background: var(--surface);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    color: #4A6E92;
+    flex-shrink: 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .suggestion-body { flex: 1; min-width: 0; }
+  .suggestion-title {
+    font-family: 'Fraunces', serif; font-weight: 600;
+    color: var(--brown); font-size: 16px;
+    margin-bottom: 4px;
+    letter-spacing: -0.01em;
+  }
+  .suggestion-text {
+    font-size: 13px; color: #6B4519;
+    line-height: 1.5; margin-bottom: 10px;
+  }
+  .suggestion-actions {
+    display: flex; gap: 8px; flex-wrap: wrap;
+  }
+
+  .idle-banner {
+    background: linear-gradient(135deg, #DDE8F2, #EEF3F8);
+    border: 1px solid #C9D7E5;
+    color: #3A5572;
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex; align-items: center; gap: 12px;
+    margin-top: 14px;
+    font-size: 14px;
+  }
+  .idle-banner .idle-banner-icon {
+    width: 32px; height: 32px;
+    background: rgba(255,255,255,0.6);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    color: #4A6E92;
+    flex-shrink: 0;
+  }
+
   .switcher-card.add {
     background: transparent;
     border: 1px dashed var(--border);
@@ -721,6 +787,88 @@
     border-color: var(--terracotta);
     border-style: solid;
   }
+
+  /* Account button + sync chip */
+  .account-btn {
+    background: var(--cream-deep);
+    border: 1px solid var(--border-soft);
+    border-radius: 999px;
+    padding: 6px 12px 6px 6px;
+    display: inline-flex; align-items: center; gap: 7px;
+    font-family: inherit; font-size: 12px; font-weight: 600;
+    color: var(--brown-soft); cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .account-btn:hover { background: var(--border); color: var(--brown); }
+  .account-btn-out {
+    background: var(--terracotta);
+    color: white;
+    padding: 7px 14px;
+    border: none;
+  }
+  .account-btn-out:hover { background: var(--terracotta-deep); color: white; }
+  .account-avatar {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--terracotta); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700; letter-spacing: 0;
+    text-transform: uppercase;
+  }
+  .sync-dot {
+    display: inline-block;
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--sage);
+    margin-right: 4px;
+    vertical-align: middle;
+  }
+  .auth-tabs {
+    display: flex;
+    background: var(--cream-deep);
+    padding: 4px; border-radius: 12px;
+    margin-bottom: 16px;
+  }
+  .auth-tab {
+    flex: 1; padding: 9px 14px;
+    border: none; background: transparent;
+    font-family: inherit; font-size: 13px; font-weight: 600;
+    color: var(--muted); cursor: pointer; border-radius: 9px;
+    transition: all 0.18s ease;
+  }
+  .auth-tab.active {
+    background: var(--surface);
+    color: var(--brown);
+    box-shadow: var(--shadow-sm);
+  }
+  .auth-error {
+    background: var(--rose-soft);
+    color: #8A3329;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    margin-bottom: 14px;
+    font-weight: 500;
+  }
+  .auth-success {
+    background: var(--sage-soft);
+    color: #4A6B33;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    margin-bottom: 14px;
+    font-weight: 500;
+  }
+  .auth-help {
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .auth-help a {
+    color: var(--terracotta);
+    text-decoration: none;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .auth-help a:hover { text-decoration: underline; }
 
   /* Help tooltips */
   .helptip {
@@ -819,6 +967,7 @@
 
 <script crossorigin src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 
 <script>
 (function() {
@@ -832,6 +981,20 @@ const h = React.createElement;
 // ============================================================
 //  Storage helpers
 // ============================================================
+// ============================================================
+//  Supabase config — paste your project values here.
+//  Until both are set, the app runs in local-only mode (current behavior).
+//  See supabase-setup.md for how to get these.
+// ============================================================
+const SUPABASE_URL = 'YOUR_SUPABASE_URL_HERE';
+const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE';
+
+const supabaseClient = (
+  SUPABASE_URL.startsWith('YOUR_') ||
+  SUPABASE_ANON_KEY.startsWith('YOUR_') ||
+  !window.supabase
+) ? null : window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 const STORAGE_KEY = 'crumb.state.v1';
 
 function loadState() {
@@ -846,6 +1009,71 @@ function saveState(state) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   } catch (e) { /* ignore quota */ }
+}
+
+// ============================================================
+//  Auth + cloud sync helpers (Supabase)
+// ============================================================
+async function authSignUp(email, password) {
+  if (!supabaseClient) throw new Error('Sign-in is not configured yet.');
+  const { data, error } = await supabaseClient.auth.signUp({ email, password });
+  if (error) throw error;
+  return data;
+}
+
+async function authSignIn(email, password) {
+  if (!supabaseClient) throw new Error('Sign-in is not configured yet.');
+  const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+  if (error) throw error;
+  return data;
+}
+
+async function authSignOut() {
+  if (!supabaseClient) return;
+  await supabaseClient.auth.signOut();
+}
+
+async function authResetPassword(email) {
+  if (!supabaseClient) throw new Error('Sign-in is not configured yet.');
+  const { error } = await supabaseClient.auth.resetPasswordForEmail(email);
+  if (error) throw error;
+}
+
+async function fetchCloudData(userId) {
+  if (!supabaseClient) return null;
+  const { data, error } = await supabaseClient
+    .from('crumb_data')
+    .select('data')
+    .eq('user_id', userId)
+    .maybeSingle();
+  if (error) {
+    console.error('Cloud fetch failed', error);
+    return null;
+  }
+  return data?.data || null;
+}
+
+async function pushCloudData(userId, stateData) {
+  if (!supabaseClient) return;
+  const { error } = await supabaseClient
+    .from('crumb_data')
+    .upsert({
+      user_id: userId,
+      data: stateData,
+      updated_at: new Date().toISOString(),
+    });
+  if (error) console.error('Cloud push failed', error);
+}
+
+function hasLocalData(state) {
+  if (!state) return false;
+  if (state.activeBake) return true;
+  if ((state.reviews || []).length > 0) return true;
+  if ((state.starters || []).some(s => (s.feedings || []).length > 0)) return true;
+  if ((state.starters || []).some(s => s.name && s.name !== 'My Starter')) return true;
+  const libIds = new Set(RECIPE_LIBRARY.map(r => r.id));
+  if ((state.recipes || []).some(r => !libIds.has(r.id))) return true;
+  return false;
 }
 
 const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
@@ -1166,6 +1394,9 @@ const defaultState = {
       ambientTempC: 22,
       defaultRatio: { starter: 1, flour: 1, water: 1 },
       defaultFlour: 'Bread flour',
+      idle: false,
+      idleStartedAt: null,
+      idleSuggestionDismissedAt: null,
       feedings: [], // { id, ts, ratio: {starter,flour,water}, tempC, flour, notes }
     },
   ],
@@ -1211,6 +1442,24 @@ function reducer(state, action) {
 
     case 'SET_ACTIVE_STARTER':
       return { ...state, activeStarterId: action.id };
+
+    case 'IDLE_STARTER':
+      return {
+        ...state,
+        starters: state.starters.map(s => s.id === action.id ? { ...s, idle: true, idleStartedAt: Date.now() } : s),
+      };
+
+    case 'WAKE_STARTER':
+      return {
+        ...state,
+        starters: state.starters.map(s => s.id === action.id ? { ...s, idle: false, idleStartedAt: null } : s),
+      };
+
+    case 'DISMISS_IDLE_SUGGESTION':
+      return {
+        ...state,
+        starters: state.starters.map(s => s.id === action.id ? { ...s, idleSuggestionDismissedAt: Date.now() } : s),
+      };
 
     case 'ADD_FEEDING':
       return {
@@ -1337,6 +1586,21 @@ function flourBlendLabel(recipe) {
   return flours
     .map(f => `${Math.round((Number(f.grams) / total) * 100)}% ${f.name}`)
     .join(' + ');
+}
+
+function needsIdleSuggestion(starter) {
+  if (!starter || starter.idle) return false;
+  const last = starter.feedings?.[0];
+  if (!last) return false;
+  const daysSinceFed = (Date.now() - last.ts) / 86400000;
+  if (daysSinceFed < 5) return false;
+  if (starter.idleSuggestionDismissedAt) {
+    const daysSinceDismiss = (Date.now() - starter.idleSuggestionDismissedAt) / 86400000;
+    // Resurface dismissal if it was before the most recent feeding,
+    // otherwise snooze for 3 days at a time
+    if (starter.idleSuggestionDismissedAt > last.ts && daysSinceDismiss < 3) return false;
+  }
+  return true;
 }
 
 function ageOfStarter(starter) {
@@ -1470,6 +1734,11 @@ const Icon = ({ name, size = 18 }) => {
     'star-outline': h('path', { d: 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z', fill: 'none', stroke: 'currentColor', strokeWidth: 1.5, strokeLinejoin: 'round' }),
     lightbulb: h('g', { fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' },
       h('path', { d: 'M9 18h6M10 22h4M12 2a7 7 0 00-4 12.7c.6.5 1 1.3 1 2.1V18h6v-1.2c0-.8.4-1.6 1-2.1A7 7 0 0012 2z' })),
+    snowflake: h('g', { fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round', strokeLinejoin: 'round' },
+      h('path', { d: 'M12 2v20M2 12h20M4.93 4.93l14.14 14.14M19.07 4.93L4.93 19.07M9 5l3 3 3-3M9 19l3-3 3 3M5 9l3 3-3 3M19 9l-3 3 3 3' })),
+    sunUp: h('g', { fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' },
+      h('circle', { cx: 12, cy: 13, r: 4 }),
+      h('path', { d: 'M12 3v3M5 13H3M21 13h-2M5.6 6.6l1.4 1.4M18.4 6.6L17 8M12 21l-3-3M12 21l3-3' })),
   };
   return h('svg', { width: size, height: size, viewBox: '0 0 24 24', style: { display: 'block' } }, paths[name]);
 };
@@ -1496,6 +1765,39 @@ function getRecipeRating(recipeId, reviews) {
   if (rs.length === 0) return null;
   const avg = rs.reduce((sum, r) => sum + r.rating, 0) / rs.length;
   return { avg, count: rs.length };
+}
+
+function IdleSuggestionCard({ starter, dispatch, toast, onLogFeeding }) {
+  if (!needsIdleSuggestion(starter)) return null;
+  const last = starter.feedings[0];
+  const daysSince = Math.floor((Date.now() - last.ts) / 86400000);
+
+  return h('div', { className: 'suggestion-card' },
+    h('div', { className: 'suggestion-icon' }, h(Icon, { name: 'snowflake', size: 18 })),
+    h('div', { className: 'suggestion-body' },
+      h('div', { className: 'suggestion-title' }, `${starter.name} hasn't been fed in ${daysSince} days`),
+      h('div', { className: 'suggestion-text' },
+        "If it's resting in the fridge, mark it as idle so notifications pause. If you forgot, log a feeding now."
+      ),
+      h('div', { className: 'suggestion-actions' },
+        h('button', {
+          className: 'btn btn-sm btn-primary',
+          onClick: () => {
+            dispatch({ type: 'IDLE_STARTER', id: starter.id });
+            toast(`${starter.name} is now in the fridge`);
+          },
+        }, h(Icon, { name: 'snowflake', size: 14 }), 'Put in fridge'),
+        onLogFeeding && h('button', {
+          className: 'btn btn-sm',
+          onClick: onLogFeeding,
+        }, h(Icon, { name: 'plus', size: 14 }), 'Log feeding'),
+        h('button', {
+          className: 'btn btn-sm btn-ghost',
+          onClick: () => dispatch({ type: 'DISMISS_IDLE_SUGGESTION', id: starter.id }),
+        }, 'Dismiss'),
+      ),
+    ),
+  );
 }
 
 function FactCard() {
@@ -1544,7 +1846,20 @@ function HelpTip({ label, text }) {
   );
 }
 
-function Header({ tab, setTab }) {
+function Header({ tab, setTab, authUser, onOpenAuth, onSignOut }) {
+  const [menuOpen, setMenuOpen] = useState(false);
+  useEffect(() => {
+    if (!menuOpen) return;
+    const close = (e) => {
+      if (e.target.closest && e.target.closest('.account-menu')) return;
+      setMenuOpen(false);
+    };
+    const t = setTimeout(() => document.addEventListener('click', close), 0);
+    return () => { clearTimeout(t); document.removeEventListener('click', close); };
+  }, [menuOpen]);
+
+  const initials = authUser?.email ? authUser.email[0].toUpperCase() : '';
+
   return h('header', { className: 'app-header' },
     h('div', { className: 'app-header-inner' },
       h('div', { className: 'brand' },
@@ -1554,14 +1869,46 @@ function Header({ tab, setTab }) {
           h('div', { className: 'brand-tag' }, 'one rise at a time'),
         ),
       ),
-      h('nav', { className: 'tabs' },
-        ['today', 'starter', 'recipes', 'bake', 'reviews'].map(t =>
-          h('button', {
-            key: t,
-            className: 'tab' + (tab === t ? ' active' : ''),
-            onClick: () => setTab(t),
-          }, t.charAt(0).toUpperCase() + t.slice(1))
+      h('div', { style: { display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', justifyContent: 'flex-end' } },
+        h('nav', { className: 'tabs' },
+          ['today', 'starter', 'recipes', 'bake', 'reviews'].map(t =>
+            h('button', {
+              key: t,
+              className: 'tab' + (tab === t ? ' active' : ''),
+              onClick: () => setTab(t),
+            }, t.charAt(0).toUpperCase() + t.slice(1))
+          ),
         ),
+        authUser
+          ? h('div', { className: 'account-menu', style: { position: 'relative' } },
+              h('button', {
+                className: 'account-btn',
+                onClick: (e) => { e.stopPropagation(); setMenuOpen(o => !o); },
+                title: authUser.email,
+              },
+                h('div', { className: 'account-avatar' }, initials),
+                h('span', { className: 'sync-dot' }), 'Synced',
+              ),
+              menuOpen && h('div', {
+                style: {
+                  position: 'absolute', top: 'calc(100% + 6px)', right: 0,
+                  background: 'var(--surface)', border: '1px solid var(--border-soft)',
+                  borderRadius: 12, boxShadow: 'var(--shadow-md)',
+                  padding: 6, minWidth: 220, zIndex: 80,
+                },
+              },
+                h('div', { style: { padding: '8px 10px', fontSize: 12, color: 'var(--muted)' } }, authUser.email),
+                h('div', { style: { height: 1, background: 'var(--border-soft)', margin: '4px 0' } }),
+                h('button', {
+                  className: 'btn btn-ghost btn-block',
+                  style: { justifyContent: 'flex-start', textAlign: 'left' },
+                  onClick: () => { setMenuOpen(false); onSignOut(); },
+                }, 'Sign out'),
+              ),
+            )
+          : h('button', { className: 'account-btn account-btn-out', onClick: onOpenAuth },
+              'Sign in',
+            ),
       ),
     ),
   );
@@ -1579,9 +1926,12 @@ function NotifBanner({ enabled, onEnable }) {
 }
 
 // -------------------- Today tab --------------------
-function TodayTab({ state, dispatch, setTab }) {
+function TodayTab({ state, dispatch, setTab, toast }) {
   const active = getActiveStarter(state);
-  const status = useMemo(() => starterStatus(active.feedings, active.ambientTempC), [active.feedings, active.ambientTempC, Date.now()]);
+  const liveStatus = useMemo(() => starterStatus(active.feedings, active.ambientTempC), [active.feedings, active.ambientTempC, Date.now()]);
+  const status = active.idle
+    ? { state: 'idle', label: 'In the fridge', color: 'ice', progress: 0 }
+    : liveStatus;
   const last = active.feedings[0];
   const recipeCount = state.recipes.length;
   const otherStarters = state.starters.filter(s => s.id !== active.id);
@@ -1589,6 +1939,9 @@ function TodayTab({ state, dispatch, setTab }) {
   return h('div', null,
     h('h1', null, greeting()),
     h('p', { className: 'subtitle' }, 'Here\'s what\'s happening in your kitchen.'),
+
+    // Auto-suggest idle if neglected
+    h(IdleSuggestionCard, { starter: active, dispatch, toast, onLogFeeding: () => setTab('starter') }),
 
     // Starter snapshot
     h('div', { className: 'card-hero' },
@@ -1599,29 +1952,37 @@ function TodayTab({ state, dispatch, setTab }) {
         ),
         h('span', { className: `badge ${status.color}` }, status.label),
       ),
-      last
-        ? h(React.Fragment, null,
-            h('div', { className: 'rise-track' },
-              h('div', { className: 'rise-fill', style: { width: `${Math.round(status.progress * 100)}%` } })
-            ),
-            h('div', { className: 'rise-marks' },
-              h('span', null, 'Fed ', fmtRelative(last.ts)),
-              h('span', null, status.peakH ? `Peak ≈ ${fmtHoursPretty(status.peakH)}` : ''),
-            ),
-            h('div', { className: 'starter-stat-grid' },
-              h('div', { className: 'stat-tile' },
-                h('div', { className: 'stat-label' }, 'Last fed'),
-                h('div', { className: 'stat-value' }, fmtTime(last.ts)),
-                h('div', { className: 'stat-hint' }, `${last.ratio.starter}:${last.ratio.flour}:${last.ratio.water} • ${last.flour || 'Bread flour'}`),
-              ),
-              h('div', { className: 'stat-tile' },
-                h('div', { className: 'stat-label' }, status.state === 'peak' ? 'Peak window' : 'Estimated peak'),
-                h('div', { className: 'stat-value' }, fmtTime(last.ts + status.peakH * 3600000)),
-                h('div', { className: 'stat-hint' }, `${fmtTime(last.ts + status.peakH * 3600000 * 0.85)} – ${fmtTime(last.ts + status.peakH * 3600000 * 1.2)}`),
-              ),
+      active.idle
+        ? h('div', { className: 'idle-banner', style: { marginTop: 4 } },
+            h('div', { className: 'idle-banner-icon' }, h(Icon, { name: 'snowflake', size: 18 })),
+            h('div', null,
+              h('div', { style: { fontWeight: 600, marginBottom: 2 } }, `Resting since ${fmtDateOnly(active.idleStartedAt)}`),
+              h('div', { style: { fontSize: 13, opacity: 0.85 } }, 'Take it out and feed when you\'re ready to bake again.'),
             ),
           )
-        : h('div', { className: 'text-sm text-muted', style: { padding: '8px 0' } }, 'Log your first feeding to start tracking.'),
+        : last
+          ? h(React.Fragment, null,
+              h('div', { className: 'rise-track' },
+                h('div', { className: 'rise-fill', style: { width: `${Math.round(status.progress * 100)}%` } })
+              ),
+              h('div', { className: 'rise-marks' },
+                h('span', null, 'Fed ', fmtRelative(last.ts)),
+                h('span', null, status.peakH ? `Peak ≈ ${fmtHoursPretty(status.peakH)}` : ''),
+              ),
+              h('div', { className: 'starter-stat-grid' },
+                h('div', { className: 'stat-tile' },
+                  h('div', { className: 'stat-label' }, 'Last fed'),
+                  h('div', { className: 'stat-value' }, fmtTime(last.ts)),
+                  h('div', { className: 'stat-hint' }, `${last.ratio.starter}:${last.ratio.flour}:${last.ratio.water} • ${last.flour || 'Bread flour'}`),
+                ),
+                h('div', { className: 'stat-tile' },
+                  h('div', { className: 'stat-label' }, status.state === 'peak' ? 'Peak window' : 'Estimated peak'),
+                  h('div', { className: 'stat-value' }, fmtTime(last.ts + status.peakH * 3600000)),
+                  h('div', { className: 'stat-hint' }, `${fmtTime(last.ts + status.peakH * 3600000 * 0.85)} – ${fmtTime(last.ts + status.peakH * 3600000 * 1.2)}`),
+                ),
+              ),
+            )
+          : h('div', { className: 'text-sm text-muted', style: { padding: '8px 0' } }, 'Log your first feeding to start tracking.'),
       h('div', { style: { marginTop: 16, display: 'flex', gap: 8 } },
         h('button', { className: 'btn btn-primary', onClick: () => setTab('starter') },
           h(Icon, { name: 'plus', size: 16 }), 'Log feeding',
@@ -1636,15 +1997,22 @@ function TodayTab({ state, dispatch, setTab }) {
         h('button', { className: 'btn btn-ghost btn-sm', onClick: () => setTab('starter') }, 'View all →'),
       ),
       otherStarters.map(s => {
-        const st = starterStatus(s.feedings, s.ambientTempC);
+        const st = s.idle
+          ? { color: 'ice', label: 'In the fridge' }
+          : starterStatus(s.feedings, s.ambientTempC);
         return h('div', {
           key: s.id, className: 'feeding-row',
           style: { cursor: 'pointer' },
           onClick: () => { dispatch({ type: 'SET_ACTIVE_STARTER', id: s.id }); setTab('starter'); },
         },
           h('div', null,
-            h('div', { className: 'feeding-when' }, s.name),
-            h('div', { className: 'feeding-detail' }, `${ageShort(s)} • ${s.feedings.length} feed${s.feedings.length === 1 ? '' : 's'}`),
+            h('div', { className: 'feeding-when' },
+              s.idle && h('span', { style: { marginRight: 4, color: '#6B8AAF' } }, '❄'),
+              s.name,
+            ),
+            h('div', { className: 'feeding-detail' },
+              s.idle ? `Resting since ${fmtDateOnly(s.idleStartedAt)}` : `${ageShort(s)} • ${s.feedings.length} feed${s.feedings.length === 1 ? '' : 's'}`,
+            ),
           ),
           h('span', { className: `badge ${st.color}` }, st.label),
         );
@@ -1705,7 +2073,20 @@ function StarterTab({ state, dispatch, toast }) {
   const [showSettings, setShowSettings] = useState(false);
   const [showAdd, setShowAdd] = useState(false);
   const active = getActiveStarter(state);
-  const status = useMemo(() => starterStatus(active.feedings, active.ambientTempC), [active.feedings, active.ambientTempC]);
+  const liveStatus = useMemo(() => starterStatus(active.feedings, active.ambientTempC), [active.feedings, active.ambientTempC]);
+  const status = active.idle
+    ? { state: 'idle', label: 'In the fridge', color: 'ice', progress: 0 }
+    : liveStatus;
+
+  const toggleIdle = () => {
+    if (active.idle) {
+      dispatch({ type: 'WAKE_STARTER', id: active.id });
+      toast(`${active.name} woken up — feed once or twice before baking`);
+    } else {
+      dispatch({ type: 'IDLE_STARTER', id: active.id });
+      toast(`${active.name} is now in the fridge`);
+    }
+  };
 
   return h('div', null,
     // Switcher
@@ -1714,12 +2095,17 @@ function StarterTab({ state, dispatch, toast }) {
         const isActive = s.id === active.id;
         return h('button', {
           key: s.id,
-          className: 'switcher-card' + (isActive ? ' active' : ''),
+          className: 'switcher-card' + (isActive ? ' active' : '') + (s.idle ? ' idle' : ''),
           onClick: () => dispatch({ type: 'SET_ACTIVE_STARTER', id: s.id }),
           type: 'button',
         },
-          h('span', { className: 'switcher-card-name' }, s.name),
-          h('span', { className: 'switcher-card-meta' }, `${ageShort(s)} • ${s.feedings.length} feed${s.feedings.length === 1 ? '' : 's'}`),
+          h('span', { className: 'switcher-card-name' },
+            s.idle && h('span', { style: { marginRight: 4, color: '#6B8AAF' } }, '❄'),
+            s.name,
+          ),
+          h('span', { className: 'switcher-card-meta' },
+            s.idle ? 'In fridge' : `${ageShort(s)} • ${s.feedings.length} feed${s.feedings.length === 1 ? '' : 's'}`,
+          ),
         );
       }),
       h('button', {
@@ -1739,24 +2125,41 @@ function StarterTab({ state, dispatch, toast }) {
       `Created ${fmtDateOnly(active.createdAt)} • ${ageOfStarter(active)} • ${active.feedings.length} feeding${active.feedings.length === 1 ? '' : 's'}`
     ),
 
+    // Auto-suggest idle if neglected
+    h(IdleSuggestionCard, { starter: active, dispatch, toast, onLogFeeding: () => setShowFeed(true) }),
+
     // Status card
     h('div', { className: 'card-hero' },
       h('div', { className: 'row-between', style: { marginBottom: 12 } },
         h('span', { className: `badge ${status.color}`, style: { fontSize: 13, padding: '6px 14px' } }, status.label),
-        status.peakH && h('span', { className: 'text-xs text-muted' }, `Cycle ≈ ${fmtHoursPretty(status.peakH)}`),
+        !active.idle && status.peakH && h('span', { className: 'text-xs text-muted' }, `Cycle ≈ ${fmtHoursPretty(status.peakH)}`),
       ),
-      active.feedings.length > 0 && h(React.Fragment, null,
-        h('div', { className: 'rise-track' },
-          h('div', { className: 'rise-fill', style: { width: `${Math.round(status.progress * 100)}%` } }),
+      active.idle
+        ? h('div', { className: 'idle-banner' },
+            h('div', { className: 'idle-banner-icon' }, h(Icon, { name: 'snowflake', size: 18 })),
+            h('div', null,
+              h('div', { style: { fontWeight: 600, marginBottom: 2 } }, `In the fridge since ${fmtDateOnly(active.idleStartedAt)}`),
+              h('div', { style: { fontSize: 13, opacity: 0.85 } }, 'Feedings paused. Notifications are off until you take it out.'),
+            ),
+          )
+        : active.feedings.length > 0 && h(React.Fragment, null,
+            h('div', { className: 'rise-track' },
+              h('div', { className: 'rise-fill', style: { width: `${Math.round(status.progress * 100)}%` } }),
+            ),
+            h('div', { className: 'rise-marks' },
+              h('span', null, 'Fed'),
+              h('span', null, 'Rising'),
+              h('span', null, 'Peak'),
+            ),
+          ),
+      h('div', { style: { display: 'flex', gap: 8, marginTop: 18, flexWrap: 'wrap' } },
+        h('button', { className: 'btn btn-primary', style: { flex: 1, minWidth: 140 }, onClick: () => setShowFeed(true) },
+          h(Icon, { name: 'plus', size: 16 }), 'Log feeding',
         ),
-        h('div', { className: 'rise-marks' },
-          h('span', null, 'Fed'),
-          h('span', null, 'Rising'),
-          h('span', null, 'Peak'),
+        h('button', { className: 'btn', style: { flex: 1, minWidth: 140 }, onClick: toggleIdle },
+          h(Icon, { name: active.idle ? 'sunUp' : 'snowflake', size: 16 }),
+          active.idle ? 'Take out of fridge' : 'Put in fridge',
         ),
-      ),
-      h('button', { className: 'btn btn-primary btn-block', style: { marginTop: 18 }, onClick: () => setShowFeed(true) },
-        h(Icon, { name: 'plus', size: 16 }), 'Log feeding',
       ),
     ),
 
@@ -2916,6 +3319,160 @@ function ReviewDetailModal({ state, review, onClose, onEdit, onDelete }) {
   );
 }
 
+// -------------------- Auth modal --------------------
+function AuthModal({ onClose, toast }) {
+  const [mode, setMode] = useState('signin'); // 'signin' | 'signup' | 'reset'
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  const submit = async (e) => {
+    e.preventDefault();
+    setError(''); setSuccess('');
+    if (!email.trim()) { setError('Enter your email.'); return; }
+    if (mode !== 'reset' && password.length < 6) {
+      setError('Password must be at least 6 characters.');
+      return;
+    }
+    setBusy(true);
+    try {
+      if (mode === 'signin') {
+        await authSignIn(email.trim(), password);
+        toast('Signed in');
+        onClose();
+      } else if (mode === 'signup') {
+        const result = await authSignUp(email.trim(), password);
+        // If email confirmation is enabled, session is null until they confirm
+        if (!result.session) {
+          setSuccess('Check your email to confirm your account, then sign in.');
+          setMode('signin');
+        } else {
+          toast('Account created');
+          onClose();
+        }
+      } else if (mode === 'reset') {
+        await authResetPassword(email.trim());
+        setSuccess('Password reset email sent. Check your inbox.');
+      }
+    } catch (err) {
+      setError(err.message || 'Something went wrong. Try again.');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const title = mode === 'signin' ? 'Sign in to Crumb'
+    : mode === 'signup' ? 'Create your Crumb account'
+    : 'Reset password';
+
+  return h(Modal, { title, onClose },
+    h('form', { onSubmit: submit },
+      h('div', { className: 'modal-body' },
+        mode !== 'reset' && h('div', { className: 'auth-tabs' },
+          h('button', {
+            type: 'button',
+            className: 'auth-tab' + (mode === 'signin' ? ' active' : ''),
+            onClick: () => { setMode('signin'); setError(''); setSuccess(''); },
+          }, 'Sign in'),
+          h('button', {
+            type: 'button',
+            className: 'auth-tab' + (mode === 'signup' ? ' active' : ''),
+            onClick: () => { setMode('signup'); setError(''); setSuccess(''); },
+          }, 'Create account'),
+        ),
+        error && h('div', { className: 'auth-error' }, error),
+        success && h('div', { className: 'auth-success' }, success),
+        !supabaseClient && h('div', { className: 'auth-error' },
+          "Sign-in isn't configured yet. Open supabase-setup.md for setup instructions."
+        ),
+        h('div', { className: 'field' },
+          h('label', { className: 'field-label' }, 'Email'),
+          h('input', {
+            type: 'email', className: 'input',
+            value: email,
+            onChange: e => setEmail(e.target.value),
+            placeholder: 'you@example.com',
+            required: true, autoFocus: true,
+            disabled: !supabaseClient,
+          }),
+        ),
+        mode !== 'reset' && h('div', { className: 'field' },
+          h('label', { className: 'field-label' }, 'Password'),
+          h('input', {
+            type: 'password', className: 'input',
+            value: password,
+            onChange: e => setPassword(e.target.value),
+            placeholder: 'At least 6 characters',
+            required: true, minLength: 6,
+            disabled: !supabaseClient,
+          }),
+        ),
+        mode === 'signin' && h('div', { className: 'auth-help' },
+          h('a', { onClick: () => { setMode('reset'); setError(''); setSuccess(''); } }, 'Forgot password?'),
+        ),
+        mode === 'reset' && h('div', { className: 'auth-help' },
+          h('a', { onClick: () => { setMode('signin'); setError(''); setSuccess(''); } }, '← Back to sign in'),
+        ),
+        mode === 'signup' && h('div', { className: 'auth-help' },
+          "Signing up syncs your existing recipes, starters, and reviews to your account so they appear on any device."
+        ),
+      ),
+      h('div', { className: 'modal-footer' },
+        h('button', { type: 'button', className: 'btn', onClick: onClose }, 'Cancel'),
+        h('button', {
+          type: 'submit', className: 'btn btn-primary',
+          disabled: busy || !supabaseClient,
+        },
+          busy ? 'Working…'
+            : mode === 'signin' ? 'Sign in'
+            : mode === 'signup' ? 'Create account'
+            : 'Send reset email'
+        ),
+      ),
+    ),
+  );
+}
+
+// -------------------- Merge choice modal --------------------
+function MergeChoiceModal({ onChoose, busy }) {
+  return h(Modal, { title: 'Welcome back', onClose: () => onChoose('signout') },
+    h('div', null,
+      h('div', { className: 'modal-body' },
+        h('p', { style: { color: 'var(--brown-soft)', marginBottom: 14, lineHeight: 1.6 } },
+          "We found existing data in your account ", h('strong', null, "and"), " new data on this device. Which would you like to keep?"
+        ),
+        h('div', { style: { background: 'var(--cream-deep)', padding: 14, borderRadius: 10, fontSize: 13, color: 'var(--brown-soft)', lineHeight: 1.5 } },
+          h('strong', null, 'Tip: '),
+          "If you've been using Crumb on this device and just signed in, choose ", h('strong', null, '"Keep this device's data"'),
+          " to upload it to your account. If you came here to access an existing account, choose ", h('strong', null, '"Use account data"'), "."
+        ),
+      ),
+      h('div', { className: 'modal-footer', style: { flexDirection: 'column', alignItems: 'stretch', gap: 8 } },
+        h('button', {
+          type: 'button',
+          className: 'btn btn-primary btn-block',
+          disabled: busy,
+          onClick: () => onChoose('cloud'),
+        }, busy ? 'Working…' : 'Use account data (replace this device)'),
+        h('button', {
+          type: 'button',
+          className: 'btn btn-block',
+          disabled: busy,
+          onClick: () => onChoose('local'),
+        }, "Keep this device's data (upload to account)"),
+        h('button', {
+          type: 'button',
+          className: 'btn btn-danger-ghost btn-block',
+          disabled: busy,
+          onClick: () => onChoose('signout'),
+        }, 'Cancel — sign me out'),
+      ),
+    ),
+  );
+}
+
 // -------------------- Modal wrapper --------------------
 function Modal({ title, onClose, children }) {
   useEffect(() => {
@@ -2969,8 +3526,9 @@ function useNotificationScheduler(state) {
         }
       }
 
-      // Starter peak windows — one for each starter
+      // Starter peak windows — one for each starter (skip idle)
       state.starters.forEach(s => {
+        if (s.idle) return;
         const last = s.feedings[0];
         if (!last) return;
         const peakH = predictPeakHours(last.ratio, last.tempC ?? s.ambientTempC);
@@ -3016,13 +3574,16 @@ function App() {
       merged.activeStarterId = DEFAULT_STARTER_ID;
       delete merged.starter;
     }
-    // Ensure every starter has an id + createdAt
+    // Ensure every starter has an id + createdAt + idle fields
     if (Array.isArray(merged.starters)) {
       merged.starters = merged.starters.map(s => ({
         ...s,
         id: s.id || uid(),
         createdAt: s.createdAt || (s.feedings?.length ? Math.min(...s.feedings.map(f => f.ts)) : Date.now()),
         feedings: s.feedings || [],
+        idle: s.idle === true,
+        idleStartedAt: s.idleStartedAt || null,
+        idleSuggestionDismissedAt: s.idleSuggestionDismissedAt || null,
       }));
       if (!merged.starters.find(s => s.id === merged.activeStarterId)) {
         merged.activeStarterId = merged.starters[0]?.id || DEFAULT_STARTER_ID;
@@ -3105,13 +3666,102 @@ function App() {
     }
   };
 
+  // ===== Auth + cloud sync =====
+  const [authUser, setAuthUser] = useState(null);
+  const [showAuth, setShowAuth] = useState(false);
+  const [pendingMerge, setPendingMerge] = useState(null); // { cloud, local }
+  const [mergeBusy, setMergeBusy] = useState(false);
+  const cloudReady = useRef(false);
+
+  // Subscribe to auth session changes
+  useEffect(() => {
+    if (!supabaseClient) return;
+    supabaseClient.auth.getSession().then(({ data: { session } }) => {
+      setAuthUser(session?.user || null);
+    });
+    const { data } = supabaseClient.auth.onAuthStateChange((event, session) => {
+      setAuthUser(session?.user || null);
+      if (event === 'SIGNED_OUT') {
+        cloudReady.current = false;
+      }
+    });
+    return () => data?.subscription?.unsubscribe?.();
+  }, []);
+
+  // On sign-in: reconcile cloud vs local
+  const stateRef = useRef(state);
+  useEffect(() => { stateRef.current = state; });
+
+  useEffect(() => {
+    if (!authUser || !supabaseClient) {
+      cloudReady.current = false;
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      const cloud = await fetchCloudData(authUser.id);
+      if (cancelled) return;
+      const localMeaningful = hasLocalData(stateRef.current);
+      if (cloud && localMeaningful) {
+        setPendingMerge({ cloud, local: stateRef.current });
+      } else if (cloud) {
+        dispatch({ type: 'HYDRATE', state: cloud });
+        cloudReady.current = true;
+      } else {
+        await pushCloudData(authUser.id, stateRef.current);
+        cloudReady.current = true;
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [authUser?.id]);
+
+  // Debounced push of state changes to cloud
+  useEffect(() => {
+    if (!authUser || !supabaseClient || !cloudReady.current) return;
+    const t = setTimeout(() => {
+      pushCloudData(authUser.id, state);
+    }, 1500);
+    return () => clearTimeout(t);
+  }, [state, authUser?.id]);
+
+  const resolveMerge = async (choice) => {
+    if (!pendingMerge || !authUser) return;
+    setMergeBusy(true);
+    try {
+      if (choice === 'cloud') {
+        dispatch({ type: 'HYDRATE', state: pendingMerge.cloud });
+        cloudReady.current = true;
+        toast('Loaded data from your account');
+      } else if (choice === 'local') {
+        await pushCloudData(authUser.id, pendingMerge.local);
+        cloudReady.current = true;
+        toast('This device\'s data uploaded');
+      } else if (choice === 'signout') {
+        await authSignOut();
+      }
+    } finally {
+      setMergeBusy(false);
+      setPendingMerge(null);
+    }
+  };
+
+  const signOut = async () => {
+    await authSignOut();
+    toast('Signed out');
+  };
+
   const tab = state.ui.tab;
 
   return h(React.Fragment, null,
-    h(Header, { tab, setTab }),
+    h(Header, {
+      tab, setTab,
+      authUser,
+      onOpenAuth: () => setShowAuth(true),
+      onSignOut: signOut,
+    }),
     h('main', null,
       h(NotifBanner, { enabled: state.notificationsEnabled, onEnable: enableNotifs }),
-      tab === 'today' && h(TodayTab, { state, dispatch, setTab }),
+      tab === 'today' && h(TodayTab, { state, dispatch, setTab, toast }),
       tab === 'starter' && h(StarterTab, { state, dispatch, toast }),
       tab === 'recipes' && h(RecipesTab, { state, dispatch, toast, setTab }),
       tab === 'bake' && h(BakeTab, { state, dispatch, toast, onFinishBake }),
@@ -3126,6 +3776,14 @@ function App() {
         setPendingReview(null);
         toast('Review saved');
       },
+    }),
+    showAuth && h(AuthModal, {
+      onClose: () => setShowAuth(false),
+      toast,
+    }),
+    pendingMerge && h(MergeChoiceModal, {
+      onChoose: resolveMerge,
+      busy: mergeBusy,
     }),
     toastMsg && h('div', { className: 'toast' }, toastMsg),
   );
