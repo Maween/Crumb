@@ -1397,6 +1397,7 @@ const defaultState = {
       idle: false,
       idleStartedAt: null,
       idleSuggestionDismissedAt: null,
+      wokeAt: null,
       feedings: [], // { id, ts, ratio: {starter,flour,water}, tempC, flour, notes }
     },
   ],
@@ -1452,7 +1453,7 @@ function reducer(state, action) {
     case 'WAKE_STARTER':
       return {
         ...state,
-        starters: state.starters.map(s => s.id === action.id ? { ...s, idle: false, idleStartedAt: null } : s),
+        starters: state.starters.map(s => s.id === action.id ? { ...s, idle: false, idleStartedAt: null, wokeAt: Date.now() } : s),
       };
 
     case 'DISMISS_IDLE_SUGGESTION':
@@ -1549,22 +1550,38 @@ function predictPeakHours(ratio, tempC) {
   return Math.max(1.5, Math.min(24, hours));
 }
 
-function starterStatus(feedings, ambientTempC) {
+function starterStatus(feedings, ambientTempC, wokeAt = null) {
+  // Just woken from the fridge, no feeding logged since — needs refreshing first
+  if (wokeAt) {
+    const lastF = feedings[0];
+    if (!lastF || lastF.ts < wokeAt) {
+      return { state: 'hungry-wake', label: 'Refresh to wake up', color: 'rose', progress: 1, isWaking: true };
+    }
+  }
+
   if (!feedings.length) {
     return { state: 'unknown', label: 'No feedings yet', color: 'brown', progress: 0 };
   }
   const last = feedings[0];
-  const peakH = predictPeakHours(last.ratio, last.tempC ?? ambientTempC);
+
+  // First 1–2 feeds after the fridge are sluggish — apply a multiplier so peak predictions stay honest
+  const postWakeFeedings = wokeAt ? feedings.filter(f => f.ts >= wokeAt).length : Infinity;
+  const wakeMultiplier = postWakeFeedings <= 1 ? 1.5
+    : postWakeFeedings === 2 ? 1.2
+    : 1.0;
+  const isWaking = postWakeFeedings <= 2;
+
+  const peakH = predictPeakHours(last.ratio, last.tempC ?? ambientTempC) * wakeMultiplier;
   const elapsedH = (Date.now() - last.ts) / 3_600_000;
   const peakStart = peakH * 0.85;
   const peakEnd = peakH * 1.2;
   const progress = Math.min(1, elapsedH / peakH);
 
-  if (elapsedH < 0.75) return { state: 'fed', label: 'Just fed', color: 'brown', progress, peakH, elapsedH };
-  if (elapsedH < peakStart) return { state: 'rising', label: 'Rising', color: 'amber', progress, peakH, elapsedH };
-  if (elapsedH <= peakEnd) return { state: 'peak', label: 'At peak — use now', color: 'sage', progress: 1, peakH, elapsedH };
-  if (elapsedH > 12) return { state: 'hungry', label: 'Hungry — feed soon', color: 'rose', progress: 1, peakH, elapsedH };
-  return { state: 'past', label: 'Past peak', color: 'brown', progress: 1, peakH, elapsedH };
+  if (elapsedH < 0.75) return { state: 'fed', label: 'Just fed', color: 'brown', progress, peakH, elapsedH, isWaking };
+  if (elapsedH < peakStart) return { state: 'rising', label: 'Rising', color: 'amber', progress, peakH, elapsedH, isWaking };
+  if (elapsedH <= peakEnd) return { state: 'peak', label: 'At peak — use now', color: 'sage', progress: 1, peakH, elapsedH, isWaking };
+  if (elapsedH > 12) return { state: 'hungry', label: 'Hungry — feed soon', color: 'rose', progress: 1, peakH, elapsedH, isWaking };
+  return { state: 'past', label: 'Past peak', color: 'brown', progress: 1, peakH, elapsedH, isWaking };
 }
 
 function getActiveStarter(state) {
@@ -1928,7 +1945,7 @@ function NotifBanner({ enabled, onEnable }) {
 // -------------------- Today tab --------------------
 function TodayTab({ state, dispatch, setTab, toast }) {
   const active = getActiveStarter(state);
-  const liveStatus = useMemo(() => starterStatus(active.feedings, active.ambientTempC), [active.feedings, active.ambientTempC, Date.now()]);
+  const liveStatus = useMemo(() => starterStatus(active.feedings, active.ambientTempC, active.wokeAt), [active.feedings, active.ambientTempC, active.wokeAt, Date.now()]);
   const status = active.idle
     ? { state: 'idle', label: 'In the fridge', color: 'ice', progress: 0 }
     : liveStatus;
@@ -1999,7 +2016,7 @@ function TodayTab({ state, dispatch, setTab, toast }) {
       otherStarters.map(s => {
         const st = s.idle
           ? { color: 'ice', label: 'In the fridge' }
-          : starterStatus(s.feedings, s.ambientTempC);
+          : starterStatus(s.feedings, s.ambientTempC, s.wokeAt);
         return h('div', {
           key: s.id, className: 'feeding-row',
           style: { cursor: 'pointer' },
@@ -2073,7 +2090,7 @@ function StarterTab({ state, dispatch, toast }) {
   const [showSettings, setShowSettings] = useState(false);
   const [showAdd, setShowAdd] = useState(false);
   const active = getActiveStarter(state);
-  const liveStatus = useMemo(() => starterStatus(active.feedings, active.ambientTempC), [active.feedings, active.ambientTempC]);
+  const liveStatus = useMemo(() => starterStatus(active.feedings, active.ambientTempC, active.wokeAt), [active.feedings, active.ambientTempC, active.wokeAt]);
   const status = active.idle
     ? { state: 'idle', label: 'In the fridge', color: 'ice', progress: 0 }
     : liveStatus;
@@ -2128,11 +2145,24 @@ function StarterTab({ state, dispatch, toast }) {
     // Auto-suggest idle if neglected
     h(IdleSuggestionCard, { starter: active, dispatch, toast, onLogFeeding: () => setShowFeed(true) }),
 
+    // Waking-up reminder — first 1–2 feeds after the fridge are sluggish
+    !active.idle && status.isWaking && h('div', { className: 'idle-banner', style: { marginBottom: 16, marginTop: 0 } },
+      h('div', { className: 'idle-banner-icon' }, h(Icon, { name: 'sunUp', size: 18 })),
+      h('div', null,
+        h('div', { style: { fontWeight: 600, marginBottom: 2 } }, 'Waking up from the fridge'),
+        h('div', { style: { fontSize: 13, opacity: 0.85 } },
+          status.state === 'hungry-wake'
+            ? 'Discard most of the starter and feed it now. The first feed wakes the microbes — expect it to be slow.'
+            : 'First feeds after the fridge are 20–50% slower than usual. Two refresh feeds should restore normal timing.'
+        ),
+      ),
+    ),
+
     // Status card
     h('div', { className: 'card-hero' },
       h('div', { className: 'row-between', style: { marginBottom: 12 } },
         h('span', { className: `badge ${status.color}`, style: { fontSize: 13, padding: '6px 14px' } }, status.label),
-        !active.idle && status.peakH && h('span', { className: 'text-xs text-muted' }, `Cycle ≈ ${fmtHoursPretty(status.peakH)}`),
+        !active.idle && status.peakH && h('span', { className: 'text-xs text-muted' }, `Cycle ≈ ${fmtHoursPretty(status.peakH)}${status.isWaking ? ' (slower while waking)' : ''}`),
       ),
       active.idle
         ? h('div', { className: 'idle-banner' },
@@ -2194,7 +2224,17 @@ function StarterTab({ state, dispatch, toast }) {
       onSave: (feeding) => {
         dispatch({ type: 'ADD_FEEDING', starterId: active.id, feeding });
         setShowFeed(false);
-        toast('Feeding logged');
+        // Tailor the toast if we're mid wake-up sequence
+        if (active.wokeAt) {
+          const prior = active.feedings.filter(f => f.ts >= active.wokeAt).length;
+          const counted = feeding.ts >= active.wokeAt ? prior + 1 : prior;
+          if (counted === 1) toast('1 of 2 refresh feeds done — one more should restore normal timing');
+          else if (counted === 2) toast('2 of 2 refresh feeds done — one more and you\'re back to normal');
+          else if (counted === 3) toast('Back to normal rhythm — predictions reset');
+          else toast('Feeding logged');
+        } else {
+          toast('Feeding logged');
+        }
       },
     }),
 
@@ -3531,14 +3571,19 @@ function useNotificationScheduler(state) {
         if (s.idle) return;
         const last = s.feedings[0];
         if (!last) return;
-        const peakH = predictPeakHours(last.ratio, last.tempC ?? s.ambientTempC);
+        // Match the post-wake sluggishness from starterStatus()
+        const postWakeFeedings = s.wokeAt ? s.feedings.filter(f => f.ts >= s.wokeAt).length : Infinity;
+        const wakeMultiplier = postWakeFeedings <= 1 ? 1.5
+          : postWakeFeedings === 2 ? 1.2
+          : 1.0;
+        const peakH = predictPeakHours(last.ratio, last.tempC ?? s.ambientTempC) * wakeMultiplier;
         const peakTs = last.ts + peakH * 3600000;
         const peakKey = `peak-${s.id}-${last.id}`;
         if (now >= peakTs && now < peakTs + 60000 && !fired.current.has(peakKey)) {
           fired.current.add(peakKey);
           showNotification('Crumb', `${s.name} should be at its peak — ready to use.`);
         }
-        const hungryTs = last.ts + 14 * 3600000;
+        const hungryTs = last.ts + 14 * wakeMultiplier * 3600000;
         const hungryKey = `hungry-${s.id}-${last.id}`;
         if (now >= hungryTs && now < hungryTs + 60000 && !fired.current.has(hungryKey)) {
           fired.current.add(hungryKey);
@@ -3584,6 +3629,7 @@ function App() {
         idle: s.idle === true,
         idleStartedAt: s.idleStartedAt || null,
         idleSuggestionDismissedAt: s.idleSuggestionDismissedAt || null,
+        wokeAt: s.wokeAt || null,
       }));
       if (!merged.starters.find(s => s.id === merged.activeStarterId)) {
         merged.activeStarterId = merged.starters[0]?.id || DEFAULT_STARTER_ID;
